@@ -1,0 +1,15 @@
+# coding:utf-8
+
+from toml import dump
+from toml import load
+
+
+def format(path: str):
+    with open(path, "r", encoding="UTF-8") as rhdl:
+        data = load(rhdl)
+    with open(path, "w", encoding="UTF-8") as whdl:
+        dump(data, whdl)
+
+
+if __name__ == "__main__":
+    format("langtags.toml")
