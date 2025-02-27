@@ -1,6 +1,7 @@
 [run]
 omit =
     xlc/unittest/*
+    xlc/attribute.py
 
 [report]
 exclude_lines =
