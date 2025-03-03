@@ -170,22 +170,23 @@ class LangTags():
     def __init__(self):
         data: Dict[str, Any]
         self.__tags: Dict[LangTag, LangItem] = {}
-        for lang, data in load(self.CONFIG).items():
-            ltag: LangTag = LANGUAGES.lookup(lang)
-            desc: str = data.get("description", "")
-            reco: str = data.get("recognition", "")
-            if not reco:
-                for tag in ltag.tags:
-                    _tag = LANGUAGES.lookup(tag)
-                    if _tag in self.__tags:
-                        reco = self.__tags[_tag].recognition
-                        break
-            aliases: List[str] = data.get("aliases", [])
-            item = LangItem(langtag=ltag, aliases=aliases,
-                            description=desc, recognition=reco)
-            for atag in item.aliases:
-                self.__tags.setdefault(atag, item)
-            self.__tags[item.langtag] = item
+        with open(self.CONFIG, "r", encoding="utf-8") as rhdl:
+            for lang, data in load(rhdl).items():
+                ltag: LangTag = LANGUAGES.lookup(lang)
+                desc: str = data.get("description", "")
+                reco: str = data.get("recognition", "")
+                if not reco:
+                    for tag in ltag.tags:
+                        _tag = LANGUAGES.lookup(tag)
+                        if _tag in self.__tags:
+                            reco = self.__tags[_tag].recognition
+                            break
+                aliases: List[str] = data.get("aliases", [])
+                item = LangItem(langtag=ltag, aliases=aliases,
+                                description=desc, recognition=reco)
+                for atag in item.aliases:
+                    self.__tags.setdefault(atag, item)
+                self.__tags[item.langtag] = item
 
     def lookup(self, langtag: LangT) -> LangItem:
         """Lookup language tag or replaceable subtags"""
