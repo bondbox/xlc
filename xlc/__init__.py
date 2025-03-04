@@ -9,3 +9,5 @@ from .database import LangTags  # noqa:F401
 from .database import Language  # noqa:F401
 from .database import Region  # noqa:F401
 from .database import Script  # noqa:F401
+from .language import Message  # noqa:F401
+from .language import Section  # noqa:F401
