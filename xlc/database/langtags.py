@@ -13,10 +13,10 @@ from typing import TypeVar
 
 from toml import load
 
-from .subtags import Entry
-from .subtags import Language
-from .subtags import Region
-from .subtags import Script
+from xlc.database.subtags import Entry
+from xlc.database.subtags import Language
+from xlc.database.subtags import Region
+from xlc.database.subtags import Script
 
 
 class LangTag:
