@@ -128,11 +128,12 @@ class LangTagDict(Dict[str, LangTag]):
     def __getitem__(self, index: str) -> LangTag:
         return self.lookup(index)
 
-    def lookup(self, langtag: str) -> LangTag:
-        if langtag not in self:
-            ltag: LangTag = LangTag(langtag)
-            self.setdefault(langtag, ltag)
-        return super().__getitem__(langtag)
+    def lookup(self, langtag: LangT) -> LangTag:
+        lang: str = langtag.name if isinstance(langtag, LangTag) else langtag
+        if lang not in self:
+            ltag: LangTag = LangTag(lang)
+            self.setdefault(lang, ltag)
+        return super().__getitem__(lang)
 
 
 LANGUAGES: LangTagDict = LangTagDict()
