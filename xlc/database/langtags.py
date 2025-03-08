@@ -188,6 +188,12 @@ class LangTags():
                     self.__tags.setdefault(atag, item)
                 self.__tags[item.langtag] = item
 
+    def __iter__(self) -> Iterator[LangTag]:
+        return iter(self.__tags)
+
+    def __len__(self) -> int:
+        return len(self.__tags)
+
     def lookup(self, langtag: LangT) -> LangItem:
         """Lookup language tag or replaceable subtags"""
         ltag: LangTag = LANGUAGES.lookup(langtag) if isinstance(langtag, str) else langtag  # noqa:E501

@@ -108,6 +108,9 @@ class TestLangTags(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_iter_and_len(self):
+        self.assertEqual(len([tag for tag in self.langtags]), len(self.langtags))  # noqa:E501
+
     def test_lookup_aa(self):
         self.assertRaises(LookupError, self.langtags.lookup, "aa")
 
