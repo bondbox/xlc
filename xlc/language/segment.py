@@ -47,22 +47,22 @@ class Section(Context):
             self.set(index, value)
 
 
-class Message(Section):
+class Segment(Section):
     def __init__(self):
         super().__init__()
 
     @classmethod
-    def load(cls, data: Dict[str, Any]) -> "Message":
-        instance: Message = cls()
+    def load(cls, data: Dict[str, Any]) -> "Segment":
+        instance: Segment = cls()
         for k, v in data.items():
             instance.update(k, v)
         return instance
 
     @classmethod
-    def loads(cls, data: str) -> "Message":
+    def loads(cls, data: str) -> "Segment":
         return cls.load(data=loads(data))
 
     @classmethod
-    def loadf(cls, file: str) -> "Message":
+    def loadf(cls, file: str) -> "Segment":
         with open(file, "r", encoding="utf-8") as rhdl:
             return cls.loads(data=rhdl.read())

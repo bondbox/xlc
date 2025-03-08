@@ -4,7 +4,7 @@ import unittest
 
 import mock
 
-from xlc.language import message
+from xlc.language import segment
 
 
 class TestContent(unittest.TestCase):
@@ -29,8 +29,8 @@ key = "value: {value}"
 username = "Username: {username}"
 password = "Password: {password}"
 """
-        with mock.patch.object(message, "open", mock.mock_open(read_data=cls.data)):  # noqa:E501
-            cls.root: message.Message = message.Message.loadf("test.xlc")
+        with mock.patch.object(segment, "open", mock.mock_open(read_data=cls.data)):  # noqa:E501
+            cls.root: segment.Segment = segment.Segment.loadf("test.xlc")
 
     @classmethod
     def tearDownClass(cls):
