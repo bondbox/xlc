@@ -12,7 +12,7 @@ from xlc.database.subtags import Script  # noqa:F401
 
 class Database:
     def __init__(self):
-        self.__langtags: LangTags = LangTags()
+        self.__langtags: LangTags = LangTags.from_config()
 
     @property
     def langtags(self) -> LangTags:

@@ -169,25 +169,7 @@ class LangTags():
     CONFIG: str = join(dirname(__file__), "langtags.toml")
 
     def __init__(self):
-        data: Dict[str, Any]
         self.__tags: Dict[LangTag, LangItem] = {}
-        with open(self.CONFIG, "r", encoding="utf-8") as rhdl:
-            for lang, data in load(rhdl).items():
-                ltag: LangTag = LANGUAGES.lookup(lang)
-                desc: str = data.get("description", "")
-                reco: str = data.get("recognition", "")
-                if not reco:
-                    for tag in ltag.tags:
-                        _tag = LANGUAGES.lookup(tag)
-                        if _tag in self.__tags:
-                            reco = self.__tags[_tag].recognition
-                            break
-                aliases: List[str] = data.get("aliases", [])
-                item = LangItem(langtag=ltag, aliases=aliases,
-                                description=desc, recognition=reco)
-                for atag in item.aliases:
-                    self.__tags.setdefault(atag, item)
-                self.__tags[item.langtag] = item
 
     def __iter__(self) -> Iterator[LangTag]:
         return iter(self.__tags)
@@ -195,9 +177,21 @@ class LangTags():
     def __len__(self) -> int:
         return len(self.__tags)
 
+    def __contains__(self, langtag: LangT) -> bool:
+        return LANGUAGES.lookup(langtag) in self.__tags
+
+    def __getitem__(self, langtag: LangT) -> LangItem:
+        return self.lookup(langtag)
+
+    def __setitem__(self, ltag: LangT, item: LangItem) -> None:
+        assert item.langtag == ltag
+        for atag in item.aliases:
+            self.__tags.setdefault(atag, item)
+        self.__tags[item.langtag] = item
+
     def lookup(self, langtag: LangT) -> LangItem:
         """Lookup language tag or replaceable subtags"""
-        ltag: LangTag = LANGUAGES.lookup(langtag) if isinstance(langtag, str) else langtag  # noqa:E501
+        ltag: LangTag = LANGUAGES.lookup(langtag)
         if ltag in self.__tags:
             return self.__tags[ltag]
         for _tag in ltag.tags:
@@ -205,3 +199,24 @@ class LangTags():
             if tag in self.__tags:
                 return self.__tags[tag]
         raise LookupError(f"No such language tag: {langtag}")
+
+    @classmethod
+    def from_config(cls) -> "LangTags":
+        instance = cls()
+        data: Dict[str, Any]
+        with open(cls.CONFIG, "r", encoding="utf-8") as rhdl:
+            for lang, data in load(rhdl).items():
+                ltag: LangTag = LANGUAGES.lookup(lang)
+                description: str = data.get("description", "")
+                recognition: str = data.get("recognition", "")
+                if not recognition:
+                    for tag in ltag.tags:
+                        if tag in instance:
+                            recognition = instance[tag].recognition
+                            break
+                aliases: List[str] = data.get("aliases", [])
+                item = LangItem(langtag=ltag, aliases=aliases,
+                                description=description,
+                                recognition=recognition)
+                instance[item.langtag] = item
+        return instance
