@@ -213,17 +213,9 @@ class LangTags():
         data: Dict[str, Any]
         with open(cls.CONFIG, "r", encoding="utf-8") as rhdl:
             for lang, data in load(rhdl).items():
-                ltag: LangTag = LANGUAGES.lookup(lang)
-                description: str = data.get("description", "")
-                recognition: str = data.get("recognition", "")
-                if not recognition:
-                    for tag in ltag.tags:
-                        if tag in instance:
-                            recognition = instance[tag].recognition
-                            break
-                aliases: List[str] = data.get("aliases", [])
-                item = LangItem(langtag=ltag, aliases=aliases,
-                                description=description,
-                                recognition=recognition)
+                item = LangItem(langtag=LANGUAGES.lookup(lang),
+                                aliases=data.get("aliases", []),
+                                description=data.get("description", ""),
+                                recognition=data.get("recognition", ""))
                 instance[item.tag] = item
         return instance

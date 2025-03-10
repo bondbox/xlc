@@ -117,7 +117,7 @@ class TestLangTags(unittest.TestCase):
     def test_lookup_zh_hans_cn(self):
         zh_hans_cn = self.langtags.lookup("zh-Hans-CN")
         self.assertEqual(zh_hans_cn.tag, "zh-Hans-CN")
-        self.assertEqual(zh_hans_cn.recognition, "简体中文")
+        self.assertEqual(zh_hans_cn.recognition, "简体中文（中国）")
         self.assertEqual(zh_hans_cn.description, "PRC Mainland Chinese in simplified script")  # noqa:E501
 
     def test_lookup_zh_hans_us(self):
