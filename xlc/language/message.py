@@ -24,7 +24,8 @@ class Message():
         return LANGUAGES.lookup(langtag) in self.__segments
 
     def __getitem__(self, langtag: LangT) -> Segment:
-        return self.lookup(langtag)
+        ltag: LangTag = LANGUAGES.lookup(langtag)
+        return self.__segments[ltag]
 
     def __setitem__(self, langtag: LangT, item: Segment) -> None:
         assert item.lang.tag == langtag
