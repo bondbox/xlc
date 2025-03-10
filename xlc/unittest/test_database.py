@@ -116,25 +116,25 @@ class TestLangTags(unittest.TestCase):
 
     def test_lookup_zh_hans_cn(self):
         zh_hans_cn = self.langtags.lookup("zh-Hans-CN")
-        self.assertEqual(zh_hans_cn.langtag, "zh-Hans-CN")
+        self.assertEqual(zh_hans_cn.tag, "zh-Hans-CN")
         self.assertEqual(zh_hans_cn.recognition, "简体中文")
         self.assertEqual(zh_hans_cn.description, "PRC Mainland Chinese in simplified script")  # noqa:E501
 
     def test_lookup_zh_hans_us(self):
         zh_hans_us = self.langtags.lookup("zh-Hans-US")
-        self.assertEqual(zh_hans_us.langtag, "zh-Hans")
+        self.assertEqual(zh_hans_us.tag, "zh-Hans")
         self.assertEqual(zh_hans_us.recognition, "简体中文")
         self.assertEqual(zh_hans_us.description, "simplified Chinese")
 
     def test_lookup_zh_us(self):
         zh_us = self.langtags.lookup("zh-US")
-        self.assertEqual(zh_us.langtag, "zh")
+        self.assertEqual(zh_us.tag, "zh")
         self.assertEqual(zh_us.recognition, "中文")
         self.assertEqual(zh_us.description, "Chinese")
 
     def test_lookup_zh_hant(self):
         zh_hant = self.langtags.lookup("zh-Hant")
-        self.assertEqual(zh_hant.langtag, "zh-Hant")
+        self.assertEqual(zh_hant.tag, "zh-Hant")
         self.assertEqual(zh_hant.recognition, "繁體中文")
         self.assertEqual(zh_hant.description, "traditional Chinese")
 

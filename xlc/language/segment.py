@@ -6,9 +6,9 @@ from typing import Dict
 
 from toml import loads
 
-from xlc.database.langtags import LANGUAGES
+from xlc.database import DATABASE
+from xlc.database.langtags import LangItem
 from xlc.database.langtags import LangT  # noqa:H306
-from xlc.database.langtags import LangTag
 
 
 class Context():
@@ -54,12 +54,12 @@ class Section(Context):
 
 class Segment(Section):
     def __init__(self, ltag: LangT):
-        self.__langtag: LangTag = LANGUAGES.lookup(ltag)
+        self.__lang: LangItem = DATABASE.langtags[ltag]
         super().__init__()
 
     @property
-    def langtag(self) -> LangTag:
-        return self.__langtag
+    def lang(self) -> LangItem:
+        return self.__lang
 
     @classmethod
     def load(cls, ltag: LangT, data: Dict[str, Any]) -> "Segment":

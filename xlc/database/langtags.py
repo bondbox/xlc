@@ -148,7 +148,7 @@ class LangItem():
         self.__recognition: str = recognition or langtag.language.name
 
     @property
-    def langtag(self) -> LangTag:
+    def tag(self) -> LangTag:
         return self.__langtag
 
     @property
@@ -184,13 +184,13 @@ class LangTags():
         return self.lookup(langtag)
 
     def __setitem__(self, langtag: LangT, item: LangItem) -> None:
-        assert item.langtag == langtag
+        assert item.tag == langtag
         self.append(item)
 
     def append(self, item: LangItem) -> None:
         for atag in item.aliases:
             self.__tags.setdefault(atag, item)
-        self.__tags[item.langtag] = item
+        self.__tags[item.tag] = item
 
     def lookup(self, langtag: LangT) -> LangItem:
         """Lookup language tag or replaceable subtags"""
@@ -221,5 +221,5 @@ class LangTags():
                 item = LangItem(langtag=ltag, aliases=aliases,
                                 description=description,
                                 recognition=recognition)
-                instance[item.langtag] = item
+                instance[item.tag] = item
         return instance

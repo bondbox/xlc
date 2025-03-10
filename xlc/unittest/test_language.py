@@ -43,7 +43,7 @@ password = "Password: {password}"
         pass
 
     def test_langtag(self):
-        self.assertEqual(self.root.langtag, "en")
+        self.assertEqual(self.root.lang.tag, "en")
 
     def test_get(self):
         self.assertEqual(self.root.lookup("section1").get("key1"), "value1")

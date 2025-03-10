@@ -4,7 +4,6 @@ import os
 from typing import Dict
 from typing import Iterator
 
-from xlc.database import DATABASE
 from xlc.database.langtags import LANGUAGES
 from xlc.database.langtags import LangT  # noqa:H306
 from xlc.database.langtags import LangTag
@@ -28,13 +27,13 @@ class Message():
         return self.lookup(langtag)
 
     def __setitem__(self, langtag: LangT, item: Segment) -> None:
-        assert item.langtag == langtag
+        assert item.lang.tag == langtag
         self.append(item)
 
     def append(self, item: Segment) -> None:
-        for atag in DATABASE.langtags.lookup(item.langtag).aliases:
+        for atag in item.lang.aliases:
             self.__segments.setdefault(atag, item)
-        self.__segments[item.langtag] = item
+        self.__segments[item.lang.tag] = item
 
     def lookup(self, langtag: LangT) -> Segment:
         ltag: LangTag = LANGUAGES.lookup(langtag)
@@ -54,5 +53,5 @@ class Message():
             if not os.path.isfile(file):
                 continue
             segment: Segment = Segment.loadf(file)
-            instance[segment.langtag] = segment
+            instance[segment.lang.tag] = segment
         return instance
