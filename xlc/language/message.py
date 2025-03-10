@@ -51,8 +51,7 @@ class Message():
         instance = cls()
         for base in os.listdir(path):
             file: str = os.path.join(path, base)
-            if not os.path.isfile(file):
-                continue
-            segment: Segment = Segment.loadf(file)
-            instance[segment.lang.tag] = segment
+            if os.path.isfile(file):
+                segment: Segment = Segment.loadf(file)
+                instance[segment.lang.tag] = segment
         return instance
