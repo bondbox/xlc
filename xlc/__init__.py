@@ -9,5 +9,6 @@ from xlc.database import LangTags  # noqa:F401
 from xlc.database import Language  # noqa:F401
 from xlc.database import Region  # noqa:F401
 from xlc.database import Script  # noqa:F401
+from xlc.language import Message  # noqa:F401
 from xlc.language import Section  # noqa:F401
 from xlc.language import Segment  # noqa:F401
