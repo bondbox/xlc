@@ -41,9 +41,9 @@ class Message():
         if ltag in self.__segments:
             return self.__segments[ltag]
         for _tag in ltag.tags:
-            tag = LANGUAGES[_tag]
-            if tag in self.__segments:
-                return self.__segments[tag]
+            ltag = LANGUAGES[_tag]
+            if ltag in self.__segments:
+                return self.__segments[ltag]
         raise LookupError(f"No such language tag: {langtag}")
 
     @classmethod

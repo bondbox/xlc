@@ -189,8 +189,11 @@ class LangTags():
         self.append(item)
 
     def append(self, item: LangItem) -> None:
-        for atag in item.aliases:
-            self.__tags.setdefault(atag, item)
+        for alias in item.aliases:
+            value = LangItem(langtag=alias, aliases=[],
+                             description=item.description,
+                             recognition=item.recognition)
+            self.__tags.setdefault(alias, value)
         self.__tags[item.tag] = item
 
     def lookup(self, langtag: LangT) -> LangItem:
@@ -199,9 +202,9 @@ class LangTags():
         if ltag in self.__tags:
             return self.__tags[ltag]
         for _tag in ltag.tags:
-            tag = LANGUAGES[_tag]
-            if tag in self.__tags:
-                return self.__tags[tag]
+            ltag = LANGUAGES[_tag]
+            if ltag in self.__tags:
+                return self.__tags[ltag]
         raise LookupError(f"No such language tag: {langtag}")
 
     @classmethod
