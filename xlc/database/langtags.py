@@ -183,8 +183,11 @@ class LangTags():
     def __getitem__(self, langtag: LangT) -> LangItem:
         return self.lookup(langtag)
 
-    def __setitem__(self, ltag: LangT, item: LangItem) -> None:
-        assert item.langtag == ltag
+    def __setitem__(self, langtag: LangT, item: LangItem) -> None:
+        assert item.langtag == langtag
+        self.append(item)
+
+    def append(self, item: LangItem) -> None:
         for atag in item.aliases:
             self.__tags.setdefault(atag, item)
         self.__tags[item.langtag] = item

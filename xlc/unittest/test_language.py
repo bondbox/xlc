@@ -30,7 +30,7 @@ username = "Username: {username}"
 password = "Password: {password}"
 """
         with mock.patch.object(segment, "open", mock.mock_open(read_data=cls.data)):  # noqa:E501
-            cls.root: segment.Segment = segment.Segment.loadf("test.xlc")
+            cls.root: segment.Segment = segment.Segment.loadf("en.xlc")
 
     @classmethod
     def tearDownClass(cls):
