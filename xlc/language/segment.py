@@ -1,9 +1,14 @@
 # coding:utf-8
 
+import os
 from typing import Any
 from typing import Dict
 
 from toml import loads
+
+from xlc.database.langtags import LANGUAGES
+from xlc.database.langtags import LangT  # noqa:H306
+from xlc.database.langtags import LangTag
 
 
 class Context():
@@ -48,21 +53,29 @@ class Section(Context):
 
 
 class Segment(Section):
-    def __init__(self):
+    def __init__(self, ltag: LangT):
+        self.__langtag: LangTag = LANGUAGES.lookup(ltag)
         super().__init__()
 
+    @property
+    def langtag(self) -> LangTag:
+        return self.__langtag
+
     @classmethod
-    def load(cls, data: Dict[str, Any]) -> "Segment":
-        instance: Segment = cls()
+    def load(cls, ltag: LangT, data: Dict[str, Any]) -> "Segment":
+        instance: Segment = cls(ltag)
         for k, v in data.items():
             instance.update(k, v)
         return instance
 
     @classmethod
-    def loads(cls, data: str) -> "Segment":
-        return cls.load(data=loads(data))
+    def loads(cls, ltag: LangT, data: str) -> "Segment":
+        return cls.load(ltag=ltag, data=loads(data))
 
     @classmethod
     def loadf(cls, file: str) -> "Segment":
         with open(file, "r", encoding="utf-8") as rhdl:
-            return cls.loads(data=rhdl.read())
+            base: str = os.path.basename(file)
+            ltag: str = base[:base.find(".")]
+            data: str = rhdl.read()
+            return cls.loads(ltag=ltag, data=data)

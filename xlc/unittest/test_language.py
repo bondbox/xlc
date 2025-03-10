@@ -42,6 +42,9 @@ password = "Password: {password}"
     def tearDown(self):
         pass
 
+    def test_langtag(self):
+        self.assertEqual(self.root.langtag, "en")
+
     def test_get(self):
         self.assertEqual(self.root.lookup("section1").get("key1"), "value1")
         self.assertEqual(self.root.lookup("section2.section3").get("key2"), "value2")  # noqa:E501
