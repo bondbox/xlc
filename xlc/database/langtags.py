@@ -2,7 +2,6 @@
 
 from os.path import dirname
 from os.path import join
-from typing import Any
 from typing import Dict
 from typing import Iterable
 from typing import Iterator
@@ -208,14 +207,17 @@ class LangTags():
         raise LookupError(f"No such language tag: {langtag}")
 
     @classmethod
+    def load_config(cls) -> Tuple[LangItem, ...]:
+        with open(cls.CONFIG, "r", encoding="utf-8") as rhdl:
+            return tuple(LangItem(langtag=LANGUAGES.lookup(lang),
+                                  aliases=data.get("aliases", []),
+                                  description=data.get("description", ""),
+                                  recognition=data.get("recognition", ""))
+                         for lang, data in load(rhdl).items())
+
+    @classmethod
     def from_config(cls) -> "LangTags":
         instance = cls()
-        data: Dict[str, Any]
-        with open(cls.CONFIG, "r", encoding="utf-8") as rhdl:
-            for lang, data in load(rhdl).items():
-                item = LangItem(langtag=LANGUAGES.lookup(lang),
-                                aliases=data.get("aliases", []),
-                                description=data.get("description", ""),
-                                recognition=data.get("recognition", ""))
-                instance[item.tag] = item
+        for item in cls.load_config():
+            instance[item.tag] = item
         return instance
