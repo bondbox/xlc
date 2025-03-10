@@ -181,7 +181,8 @@ class LangTags():
         return LANGUAGES.lookup(langtag) in self.__tags
 
     def __getitem__(self, langtag: LangT) -> LangItem:
-        return self.lookup(langtag)
+        ltag: LangTag = LANGUAGES.lookup(langtag)
+        return self.__tags[ltag]
 
     def __setitem__(self, langtag: LangT, item: LangItem) -> None:
         assert item.tag == langtag
