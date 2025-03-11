@@ -3,7 +3,7 @@
 from urllib.parse import urljoin
 
 __project__ = "xlc"
-__version__ = "0.1.alpha.1"
+__version__ = "0.1.0"
 __description__ = "Internationalization(i18n) and Localization(l10n) of Multiple Languages"  # noqa:E501
 __urlhome__ = "https://github.com/bondbox/xlc/"
 __urlcode__ = __urlhome__
