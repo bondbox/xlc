@@ -1,7 +1,6 @@
 # coding:utf-8
 
-from os.path import dirname
-from os.path import join
+import os
 from typing import Dict
 from typing import Iterable
 from typing import Iterator
@@ -16,6 +15,8 @@ from xlc.database.subtags import Entry
 from xlc.database.subtags import Language
 from xlc.database.subtags import Region
 from xlc.database.subtags import Script
+
+BASE: str = os.path.dirname(__file__)
 
 
 class LangTag:
@@ -138,13 +139,60 @@ class LangTagDict(Dict[str, LangTag]):
 LANGUAGES: LangTagDict = LangTagDict()
 
 
+class LangMark(Dict[str, str]):
+    def __init__(self, langtag: LangTag, regions: Dict[str, str]):
+        super().__init__()
+        self.__langtag: LangTag = langtag
+        for region, recognition in regions.items():
+            self[region] = recognition
+
+    @property
+    def tag(self) -> LangTag:
+        return self.__langtag
+
+
+class LangMarks(Dict[LangTag, LangMark]):
+    CONFIG: str = os.path.join(BASE, "langmark.toml")
+
+    def __init__(self):
+        super().__init__()
+
+    def __getitem__(self, langtag: LangT) -> LangMark:
+        ltag: LangTag = LANGUAGES.lookup(langtag)
+        return super().__getitem__(ltag)
+
+    def append(self, item: LangMark) -> None:
+        self[item.tag] = item
+
+    def lookup(self, langtag: LangT) -> str:
+        ltag: LangTag = LANGUAGES.lookup(langtag)
+        mark: LangMark = self[LangTag.join(ltag.language, ltag.script)]
+        code: Optional[str] = ltag.region.code if ltag.region else None
+        return mark[code] if code else mark[""]
+
+    @classmethod
+    def load_config(cls) -> Tuple[LangMark, ...]:
+        with open(cls.CONFIG, "r", encoding="utf-8") as rhdl:
+            return tuple(LangMark(langtag=LANGUAGES.lookup(lang), regions=data)
+                         for lang, data in load(rhdl).items())
+
+    @classmethod
+    def from_config(cls) -> "LangMarks":
+        instance = cls()
+        for item in cls.load_config():
+            instance.append(item)
+        return instance
+
+
+LANGMARKS: LangMarks = LangMarks.from_config()
+
+
 class LangItem():
-    def __init__(self, langtag: LangTag, aliases: Iterable[str] = [],
-                 description: str = "", recognition: str = ""):
+    def __init__(self, langtag: LangTag, aliases: Iterable[str] = [], description: str = ""):  # noqa:E501
         self.__langtag: LangTag = langtag
         self.__aliases: Tuple[LangTag, ...] = tuple(LANGUAGES[a] for a in aliases)  # noqa:E501
         self.__description: str = description or langtag.language.name
-        self.__recognition: str = recognition or langtag.language.name
+        self.__recognition: str = LANGMARKS.lookup(langtag)
 
     @property
     def tag(self) -> LangTag:
@@ -165,7 +213,7 @@ class LangItem():
 
 class LangTags():
     """Language tags"""
-    CONFIG: str = join(dirname(__file__), "langtags.toml")
+    CONFIG: str = os.path.join(BASE, "langtags.toml")
 
     def __init__(self):
         self.__tags: Dict[LangTag, LangItem] = {}
@@ -189,9 +237,7 @@ class LangTags():
 
     def append(self, item: LangItem) -> None:
         for alias in item.aliases:
-            value = LangItem(langtag=alias, aliases=[],
-                             description=item.description,
-                             recognition=item.recognition)
+            value = LangItem(langtag=alias, aliases=[], description=item.description)  # noqa:E501
             self.__tags.setdefault(alias, value)
         self.__tags[item.tag] = item
 
@@ -211,8 +257,7 @@ class LangTags():
         with open(cls.CONFIG, "r", encoding="utf-8") as rhdl:
             return tuple(LangItem(langtag=LANGUAGES.lookup(lang),
                                   aliases=data.get("aliases", []),
-                                  description=data.get("description", ""),
-                                  recognition=data.get("recognition", ""))
+                                  description=data.get("description", ""))
                          for lang, data in load(rhdl).items())
 
     @classmethod
@@ -221,3 +266,6 @@ class LangTags():
         for item in cls.load_config():
             instance[item.tag] = item
         return instance
+
+
+LANGTAGS: LangTags = LangTags.from_config()

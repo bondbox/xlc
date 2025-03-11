@@ -2,7 +2,7 @@
 
 import unittest
 
-from xlc.database import DATABASE
+from xlc.database import LANGTAGS
 from xlc.database.langtags import LangTag
 from xlc.database.langtags import LangTags
 from xlc.database.subtags import Language
@@ -96,7 +96,7 @@ class TestLangTags(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.langtags: LangTags = DATABASE.langtags
+        cls.langtags: LangTags = LANGTAGS
 
     @classmethod
     def tearDownClass(cls):
@@ -125,6 +125,12 @@ class TestLangTags(unittest.TestCase):
         self.assertEqual(zh_hans_us.tag, "zh-Hans")
         self.assertEqual(zh_hans_us.recognition, "简体中文")
         self.assertEqual(zh_hans_us.description, "simplified Chinese")
+
+    def test_lookup_zh_cn(self):
+        zh_us = self.langtags.lookup("zh-CN")
+        self.assertEqual(zh_us.tag, "zh-CN")
+        self.assertEqual(zh_us.recognition, "中文（中国）")
+        self.assertEqual(zh_us.description, "simplified Chinese")
 
     def test_lookup_zh_us(self):
         zh_us = self.langtags.lookup("zh-US")

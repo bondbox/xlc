@@ -34,5 +34,5 @@ setup(
                   "Bug Tracker": __urlbugs__,
                   "Documentation": __urldocs__},
     packages=find_packages(include=["xlc*"], exclude=["xlc.unittest"]),
-    package_data={"xlc.database": ["langtags.toml"]},
+    package_data={"xlc.database": ["langmark.toml", "langtags.toml"]},
     install_requires=all_requirements())
