@@ -4,6 +4,7 @@ import os
 from typing import Any
 from typing import Dict
 
+from toml import dumps
 from toml import loads
 
 from xlc.database import LANGTAGS
@@ -20,6 +21,9 @@ class Context():
 
     def set(self, index: str, value: Any):
         self.__datas[index] = value
+
+    def all(self) -> Dict[str, Any]:
+        return {k: v for k, v in self.__datas.items()}
 
     def render(self, **kwargs: Any) -> Dict[str, str]:
         return {k: v.format(**kwargs) if isinstance(v, str) else str(v)
@@ -51,6 +55,12 @@ class Section(Context):
         else:
             self.set(index, value)
 
+    def dump(self) -> Dict[str, Dict[str, Any]]:
+        datas: Dict[str, Any] = self.all()
+        for k, v in self.__sections.items():
+            datas[k] = v.dump()
+        return datas
+
 
 class Segment(Section):
     def __init__(self, ltag: LangT):
@@ -60,6 +70,13 @@ class Segment(Section):
     @property
     def lang(self) -> LangItem:
         return self.__lang
+
+    def dumps(self) -> str:
+        return dumps(self.dump())
+
+    def dumpf(self, file: str) -> None:
+        with open(file, "w", encoding="utf-8") as whdl:
+            whdl.write(self.dumps())
 
     @classmethod
     def load(cls, ltag: LangT, data: Dict[str, Any]) -> "Segment":

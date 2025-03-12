@@ -58,6 +58,10 @@ password = "Password: {password}"
         self.assertEqual(self.root.lookup("login").render(username="test", password="1234"),  # noqa:E501
                          {"username": "Username: test", "password": "Password: 1234"})  # noqa:E501
 
+    def test_dump(self):
+        with mock.patch.object(segment, "open", mock.mock_open()):
+            self.assertIsNone(self.root.dumpf("en.xlc"))
+
 
 class TestMessage(unittest.TestCase):
 
