@@ -62,6 +62,10 @@ password = "Password: {password}"
         with mock.patch.object(segment, "open", mock.mock_open()):
             self.assertIsNone(self.root.dumpf("en.xlc"))
 
+    def test_generate_en(self):
+        lang = segment.Segment.generate("en").lang
+        self.assertEqual(lang.tag, "en")
+
 
 class TestMessage(unittest.TestCase):
 
