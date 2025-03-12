@@ -1,6 +1,7 @@
 MAKEFLAGS += --always-make
 
-all: build install test
+all: build reinstall test
+	make -C xlc-tools build reinstall
 
 
 clean-cover:
@@ -8,10 +9,12 @@ clean-cover:
 clean-tox:
 	rm -rf .stestr .tox
 clean: build-clean test-clean clean-cover clean-tox
+	make -C xlc-tools clean
 
 
 upload:
 	xpip-upload --config-file .pypirc dist/*
+	make -C xlc-tools upload
 
 
 build-clean:
