@@ -2,8 +2,7 @@
 
 import os
 import unittest
-
-import mock
+from unittest import mock
 
 from xlc.database import LANGTAGS
 from xlc.language import segment
