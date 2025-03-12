@@ -9,11 +9,11 @@ from xkits import add_command
 from xkits import argp
 from xkits import commands
 from xkits import run_command
-from xlc_tools.attribute import __urlhome__
-from xlc_tools.attribute import __version__
 
 from xlc import Message
 from xlc import Segment
+from xlc.attribute import __urlhome__
+from xlc.attribute import __version__
 
 
 @add_command("xlc-generate", description="Generate xlc files.")

@@ -3,15 +3,14 @@
 from setuptools import find_packages
 from setuptools import setup
 
-from xlc_tools.attribute import __author__
-from xlc_tools.attribute import __author_email__
-from xlc_tools.attribute import __description__
-from xlc_tools.attribute import __project__
-from xlc_tools.attribute import __urlbugs__
-from xlc_tools.attribute import __urlcode__
-from xlc_tools.attribute import __urldocs__
-from xlc_tools.attribute import __urlhome__
-from xlc_tools.attribute import __version__
+from xlc.attribute import __author__
+from xlc.attribute import __author_email__
+from xlc.attribute import __description__
+from xlc.attribute import __urlbugs__
+from xlc.attribute import __urlcode__
+from xlc.attribute import __urldocs__
+from xlc.attribute import __urlhome__
+from xlc.attribute import __version__
 
 
 def all_requirements():
@@ -20,11 +19,12 @@ def all_requirements():
             return rhdl.read().splitlines()
 
     requirements = read_requirements("requirements.txt")
+    requirements.append(f"xlc >= {__version__}")
     return requirements
 
 
 setup(
-    name=__project__,
+    name="xlc-tools",
     version=__version__,
     description=__description__,
     url=__urlhome__,
@@ -33,5 +33,5 @@ setup(
     project_urls={"Source Code": __urlcode__,
                   "Bug Tracker": __urlbugs__,
                   "Documentation": __urldocs__},
-    packages=find_packages(include=["xlc_tools*"], exclude=["xlc_tools.unittest"]),
+    packages=find_packages(include=["xlc_tools*"], exclude=["xlc_tools.unittest"]),  # noqa:E501
     install_requires=all_requirements())
