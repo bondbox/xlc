@@ -36,13 +36,13 @@ class Section(Context):
         self.__title: str = title
         super().__init__()
 
-    def lookup(self, index: str) -> "Section":
+    def search(self, index: str) -> "Section":
         section: Section = self
         for key in index.split("."):
-            section = section.search(key)
+            section = section.lookup(key)
         return section
 
-    def search(self, index: str) -> "Section":
+    def lookup(self, index: str) -> "Section":
         if index not in self.__sections:
             section = Section(".".join([self.__title, index]))
             self.__sections.setdefault(index, section)
