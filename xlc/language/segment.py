@@ -96,3 +96,14 @@ class Segment(Section):
             ltag: str = base[:base.find(".")]
             data: str = rhdl.read()
             return cls.loads(ltag=ltag, data=data)
+
+    @classmethod
+    def generate(cls, langtag: LangT) -> "Segment":
+        lang: LangItem = LANGTAGS[langtag]
+        return Segment.load(lang.tag, {
+            "metadata": {
+                "languagetag": lang.tag.name,
+                "description": lang.description,
+                "recognition": lang.recognition
+            }
+        })
