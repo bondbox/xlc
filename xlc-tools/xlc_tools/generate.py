@@ -12,6 +12,7 @@ from xkits import run_command
 from xlc_tools.attribute import __urlhome__
 from xlc_tools.attribute import __version__
 
+from xlc import Message
 from xlc import Segment
 
 
@@ -28,8 +29,13 @@ def run_cmd(cmds: commands) -> int:
     directory: str = cmds.args.directory
     languages: List[str] = cmds.args.languages
     os.makedirs(directory, exist_ok=True)
+    message: Message = Message.load(directory)
     for language in languages:
-        segment: Segment = Segment.generate(language)
+        if language not in message:
+            segment: Segment = Segment.generate(language)
+            message.append(segment)
+    for language in message:
+        segment: Segment = message[language]
         filename: str = f"{segment.lang.tag.name}.xlc"
         segment.dumpf(os.path.join(directory, filename))
     return 0
