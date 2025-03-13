@@ -13,8 +13,8 @@ from xlc.database.langtags import LangT  # noqa:H306
 
 
 class Context():
-    def __init__(self):
-        self.__datas: Dict[str, Any] = {}
+    def __init__(self, language: str):
+        self.__datas: Dict[str, Any] = {"language": language}
 
     def get(self, index: str) -> Any:
         return self.__datas[index]
@@ -31,10 +31,16 @@ class Context():
 
 
 class Section(Context):
-    def __init__(self, title: str = ""):
+    def __init__(self, language: LangT, title: str = ""):
+        lang: LangItem = LANGTAGS[language]
+        super().__init__(lang.tag.name)
         self.__sections: Dict[str, Section] = {}
+        self.__language: LangItem = lang
         self.__title: str = title
-        super().__init__()
+
+    @property
+    def lang(self) -> LangItem:
+        return self.__language
 
     def init(self, index: str, value: Any):
         if isinstance(value, dict):
@@ -51,7 +57,8 @@ class Section(Context):
 
     def find(self, index: str) -> "Section":
         if index not in self.__sections:
-            section = Section(".".join([self.__title, index]))
+            title: str = ".".join([self.__title, index])
+            section = Section(language=self.lang.tag, title=title)
             self.__sections.setdefault(index, section)
         return self.__sections[index]
 
@@ -63,13 +70,8 @@ class Section(Context):
 
 
 class Segment(Section):
-    def __init__(self, ltag: LangT):
-        self.__lang: LangItem = LANGTAGS[ltag]
-        super().__init__()
-
-    @property
-    def lang(self) -> LangItem:
-        return self.__lang
+    def __init__(self, lang: LangT):
+        super().__init__(language=lang)
 
     def dumps(self) -> str:
         return dumps(self.dump())

@@ -54,9 +54,9 @@ password = "Password: {password}"
         self.assertEqual(self.root.seek("section2.section3.section4").get("key4"), "value4")  # noqa:E501
 
     def test_render(self):
-        self.assertEqual(self.root.find("render").fill(value="test"), {"key": "value: test"})  # noqa:E501
+        self.assertEqual(self.root.find("render").fill(value="test")["key"], "value: test")  # noqa:E501
         self.assertEqual(self.root.find("login").fill(username="test", password="1234"),  # noqa:E501
-                         {"username": "Username: test", "password": "Password: 1234"})  # noqa:E501
+                         {"language": "en", "username": "Username: test", "password": "Password: 1234"})  # noqa:E501
 
     def test_dump(self):
         with mock.patch.object(segment, "open", mock.mock_open()):
