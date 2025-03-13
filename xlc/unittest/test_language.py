@@ -48,14 +48,14 @@ password = "Password: {password}"
         self.assertEqual(self.root.lang.tag, "en")
 
     def test_get(self):
-        self.assertEqual(self.root.lookup("section1").get("key1"), "value1")
-        self.assertEqual(self.root.search("section2.section3").get("key2"), "value2")  # noqa:E501
-        self.assertEqual(self.root.search("section2.section3").get("key3"), "value3")  # noqa:E501
-        self.assertEqual(self.root.search("section2.section3.section4").get("key4"), "value4")  # noqa:E501
+        self.assertEqual(self.root.find("section1").get("key1"), "value1")
+        self.assertEqual(self.root.seek("section2.section3").get("key2"), "value2")  # noqa:E501
+        self.assertEqual(self.root.seek("section2.section3").get("key3"), "value3")  # noqa:E501
+        self.assertEqual(self.root.seek("section2.section3.section4").get("key4"), "value4")  # noqa:E501
 
     def test_render(self):
-        self.assertEqual(self.root.lookup("render").fill(value="test"), {"key": "value: test"})  # noqa:E501
-        self.assertEqual(self.root.lookup("login").fill(username="test", password="1234"),  # noqa:E501
+        self.assertEqual(self.root.find("render").fill(value="test"), {"key": "value: test"})  # noqa:E501
+        self.assertEqual(self.root.find("login").fill(username="test", password="1234"),  # noqa:E501
                          {"username": "Username: test", "password": "Password: 1234"})  # noqa:E501
 
     def test_dump(self):

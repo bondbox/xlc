@@ -36,24 +36,24 @@ class Section(Context):
         self.__title: str = title
         super().__init__()
 
-    def search(self, index: str) -> "Section":
+    def init(self, index: str, value: Any):
+        if isinstance(value, dict):
+            for k, v in value.items():
+                self.seek(index).init(k, v)
+        else:
+            self.set(index, value)
+
+    def seek(self, index: str) -> "Section":
         section: Section = self
         for key in index.split("."):
-            section = section.lookup(key)
+            section = section.find(key)
         return section
 
-    def lookup(self, index: str) -> "Section":
+    def find(self, index: str) -> "Section":
         if index not in self.__sections:
             section = Section(".".join([self.__title, index]))
             self.__sections.setdefault(index, section)
         return self.__sections[index]
-
-    def update(self, index: str, value: Any):
-        if isinstance(value, dict):
-            for k, v in value.items():
-                self.search(index).update(k, v)
-        else:
-            self.set(index, value)
 
     def dump(self) -> Dict[str, Dict[str, Any]]:
         datas: Dict[str, Any] = self.all()
@@ -82,7 +82,7 @@ class Segment(Section):
     def load(cls, ltag: LangT, data: Dict[str, Any]) -> "Segment":
         instance: Segment = cls(ltag)
         for k, v in data.items():
-            instance.update(k, v)
+            instance.init(k, v)
         return instance
 
     @classmethod
