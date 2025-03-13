@@ -10,6 +10,7 @@ from xkits import argp
 from xkits import commands
 from xkits import run_command
 
+from xlc import LangTag
 from xlc import Message
 from xlc import Segment
 from xlc.attribute import __urlhome__
@@ -36,8 +37,8 @@ def run_cmd(cmds: commands) -> int:
             message.append(segment)
     for language in message:
         segment: Segment = message[language]
-        filename: str = f"{segment.lang.tag.name}.xlc"
-        segment.dumpf(os.path.join(directory, filename))
+        langtag: LangTag = segment.lang.tag
+        segment.dumpf(os.path.join(directory, langtag.name + Message.SUFFIX))
     return 0
 
 

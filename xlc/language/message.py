@@ -52,8 +52,9 @@ class Message():
     def load(cls, path: str) -> "Message":
         instance = cls()
         for file in os.listdir(path):
+            _, ext = os.path.splitext(file)
             full: str = os.path.join(path, file)
-            if os.path.isfile(full) and file.endswith(cls.SUFFIX):
+            if os.path.isfile(full) and ext == cls.SUFFIX:
                 segment: Segment = Segment.loadf(full)
                 instance[segment.lang.tag] = segment
         return instance
