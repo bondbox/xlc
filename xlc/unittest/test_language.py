@@ -54,8 +54,8 @@ password = "Password: {password}"
         self.assertEqual(self.root.search("section2.section3.section4").get("key4"), "value4")  # noqa:E501
 
     def test_render(self):
-        self.assertEqual(self.root.lookup("render").render(value="test"), {"key": "value: test"})  # noqa:E501
-        self.assertEqual(self.root.lookup("login").render(username="test", password="1234"),  # noqa:E501
+        self.assertEqual(self.root.lookup("render").fill(value="test"), {"key": "value: test"})  # noqa:E501
+        self.assertEqual(self.root.lookup("login").fill(username="test", password="1234"),  # noqa:E501
                          {"username": "Username: test", "password": "Password: 1234"})  # noqa:E501
 
     def test_dump(self):

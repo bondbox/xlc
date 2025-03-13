@@ -25,7 +25,7 @@ class Context():
     def all(self) -> Dict[str, Any]:
         return {k: v for k, v in self.__datas.items()}
 
-    def render(self, **kwargs: Any) -> Dict[str, str]:
+    def fill(self, **kwargs: Any) -> Dict[str, str]:
         return {k: v.format(**kwargs) if isinstance(v, str) else str(v)
                 for k, v in self.__datas.items()}
 
