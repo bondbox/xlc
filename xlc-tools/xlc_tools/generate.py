@@ -19,7 +19,7 @@ from xlc.attribute import __version__
 @add_command("xlc-generate", description="Generate xlc files.")
 def add_cmd(_arg: argp):
     _arg.add_argument("--base", dest="directory", type=str, help="directory",
-                      metavar="DIR", default="locale")
+                      metavar="DIR", default="xlocale")
     _arg.add_argument(dest="languages", type=str, help="language", nargs="*",
                       metavar="LANG", default=["en", "zh-Hans", "zh-Hant"])
 
