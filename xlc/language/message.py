@@ -11,6 +11,8 @@ from xlc.language.segment import Segment
 
 
 class Message():
+    SUFFIX: str = ".xlc"
+
     def __init__(self):
         self.__segments: Dict[LangTag, Segment] = {}
 
@@ -49,9 +51,9 @@ class Message():
     @classmethod
     def load(cls, path: str) -> "Message":
         instance = cls()
-        for base in os.listdir(path):
-            file: str = os.path.join(path, base)
-            if os.path.isfile(file):
-                segment: Segment = Segment.loadf(file)
+        for file in os.listdir(path):
+            full: str = os.path.join(path, file)
+            if os.path.isfile(full) and file.endswith(cls.SUFFIX):
+                segment: Segment = Segment.loadf(full)
                 instance[segment.lang.tag] = segment
         return instance
