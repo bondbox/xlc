@@ -1,7 +1,13 @@
 MAKEFLAGS += --always-make
 
+VERSION := $(shell python3 -c "from xlc.attribute import __version__; print(__version__)")
+
 all: build reinstall test
-	make -C xlc-tools build reinstall
+
+
+release: all
+	git tag -a v${VERSION} -m "release v${VERSION}"
+	git push origin --tags
 
 
 clean-cover:
@@ -35,7 +41,7 @@ reinstall: uninstall install
 test-prepare:
 	pip3 install --upgrade mock pylint flake8 pytest pytest-cov
 pylint:
-	pylint $(shell git ls-files xlc/*.py test/*.py example/*.py)
+	pylint $(shell git ls-files xlc/*.py)
 flake8:
 	flake8 xlc --count --select=E9,F63,F7,F82 --show-source --statistics
 	flake8 xlc --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
