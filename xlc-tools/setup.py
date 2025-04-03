@@ -1,16 +1,19 @@
 # coding=utf-8
 
+from urllib.parse import urljoin
+
 from setuptools import find_packages
 from setuptools import setup
 
 from xlc.attribute import __author__
 from xlc.attribute import __author_email__
 from xlc.attribute import __description__
-from xlc.attribute import __urlbugs__
-from xlc.attribute import __urlcode__
-from xlc.attribute import __urldocs__
 from xlc.attribute import __urlhome__
 from xlc.attribute import __version__
+
+__urlcode__ = __urlhome__
+__urldocs__ = __urlhome__
+__urlbugs__ = urljoin(__urlhome__, "issues")
 
 
 def all_requirements():
@@ -19,7 +22,7 @@ def all_requirements():
             return rhdl.read().splitlines()
 
     requirements = read_requirements("requirements.txt")
-    requirements.append(f"xlc >= {__version__}")
+    requirements.append(f"xlc>={__version__}")
     return requirements
 
 

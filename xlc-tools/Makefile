@@ -1,6 +1,6 @@
 MAKEFLAGS += --always-make
 
-all: build install test
+all: build reinstall test
 
 
 clean-cover:
@@ -32,7 +32,7 @@ reinstall: uninstall install
 test-prepare:
 	pip3 install --upgrade mock pylint flake8 pytest pytest-cov
 pylint:
-	pylint $(shell git ls-files xlc_tools/*.py test/*.py example/*.py)
+	pylint $(shell git ls-files xlc_tools/*.py)
 flake8:
 	flake8 xlc_tools --count --select=E9,F63,F7,F82 --show-source --statistics
 	flake8 xlc_tools --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
