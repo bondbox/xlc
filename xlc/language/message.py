@@ -5,8 +5,9 @@ from typing import Dict
 from typing import Iterator
 
 from xlc.database.langtags import LangDict
-from xlc.database.langtags import LangT  # noqa:H306
+from xlc.database.langtags import LangT
 from xlc.database.langtags import LangTag
+from xlc.database.langtags import LangTags
 from xlc.language.segment import Segment
 
 
@@ -51,10 +52,11 @@ class Message():
     @classmethod
     def load(cls, path: str) -> "Message":
         instance = cls()
+        langtags: LangTags = LangTags.from_config()
         for file in os.listdir(path):
             _, ext = os.path.splitext(file)
             full: str = os.path.join(path, file)
             if os.path.isfile(full) and ext == cls.SUFFIX:
-                segment: Segment = Segment.loadf(full)
+                segment: Segment = Segment.loadf(langtags, full)
                 instance.append(segment)
         return instance

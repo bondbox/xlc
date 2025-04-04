@@ -80,29 +80,28 @@ class Segment(Section):
             whdl.write(self.dumps())
 
     @classmethod
-    def load(cls, langtag: LangT, data: Dict[str, Any]) -> "Segment":
-        lang: LangItem = LangTags.from_config()[langtag]
+    def load(cls, lang: LangItem, data: Dict[str, Any]) -> "Segment":
         instance: Segment = cls(lang)
         for k, v in data.items():
             instance.init(k, v)
         return instance
 
     @classmethod
-    def loads(cls, langtag: LangT, data: str) -> "Segment":
-        return cls.load(langtag=langtag, data=loads(data))
+    def loads(cls, lang: LangItem, data: str) -> "Segment":
+        return cls.load(lang=lang, data=loads(data))
 
     @classmethod
-    def loadf(cls, file: str) -> "Segment":
+    def loadf(cls, langtags: LangTags, file: str) -> "Segment":
         with open(file, "r", encoding="utf-8") as rhdl:
             base: str = os.path.basename(file)
             ltag: str = base[:base.find(".")]
             data: str = rhdl.read()
-            return cls.loads(langtag=ltag, data=data)
+            return cls.loads(lang=langtags[ltag], data=data)
 
     @classmethod
     def generate(cls, langtag: LangT) -> "Segment":
         lang: LangItem = LangTags.from_config()[langtag]
-        return Segment.load(lang.name, {
+        return Segment.load(lang, {
             "metadata": {
                 "languagetag": lang.name,
                 "description": lang.description,

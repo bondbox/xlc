@@ -1,7 +1,7 @@
 # coding:utf-8
 
 from xlc.database import LangDict  # noqa:F401
-from xlc.database import LangItem  # noqa:F401,H306
+from xlc.database import LangItem  # noqa:F401
 from xlc.database import LangMark  # noqa:F401
 from xlc.database import LangMarks  # noqa:F401
 from xlc.database import LangT  # noqa:F401
