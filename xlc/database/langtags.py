@@ -117,55 +117,60 @@ class LangTag:
     def join(cls, *tags: Optional[Entry]) -> str:
         return cls.HYPHEN.join(str(tag) for tag in cls.filter(*tags))
 
+    @classmethod
+    def get_tag(cls, langtag: "LangT") -> "LangTag":
+        return langtag if isinstance(langtag, LangTag) else LangTag(langtag)
+
+    @classmethod
+    def get_name(cls, langtag: "LangT") -> str:
+        return langtag.name if isinstance(langtag, LangTag) else LangTag(langtag).name  # noqa:E501
+
 
 LangT = TypeVar("LangT", str, LangTag)
 
 
-class LangTagDict(Dict[str, LangTag]):
+class LangDict(Dict[str, LangTag]):
     def __init__(self):
         super().__init__()
 
     def __getitem__(self, index: str) -> LangTag:
-        return self.lookup(index)
+        return self.get(index)
 
-    def lookup(self, langtag: LangT) -> LangTag:
+    def get(self, langtag: LangT) -> LangTag:
         lang: str = langtag.name if isinstance(langtag, LangTag) else langtag
         if lang not in self:
             ltag: LangTag = LangTag(lang)
-            self.setdefault(lang, ltag)
+            self.setdefault(ltag.name, ltag)
+            self.setdefault(lang, self[ltag.name])
         return super().__getitem__(lang)
 
 
-LANGUAGES: LangTagDict = LangTagDict()
-
-
 class LangMark(Dict[str, str]):
-    def __init__(self, langtag: LangTag, regions: Dict[str, str]):
+    def __init__(self, langtag: str, regions: Dict[str, str]):
         super().__init__()
-        self.__langtag: LangTag = langtag
+        self.__langtag: str = langtag
         for region, recognition in regions.items():
             self[region] = recognition
 
     @property
-    def tag(self) -> LangTag:
+    def langtag(self) -> str:
         return self.__langtag
 
 
-class LangMarks(Dict[LangTag, LangMark]):
+class LangMarks(Dict[str, LangMark]):
     CONFIG: str = os.path.join(BASE, "langmark.toml")
 
     def __init__(self):
         super().__init__()
 
     def __getitem__(self, langtag: LangT) -> LangMark:
-        ltag: LangTag = LANGUAGES.lookup(langtag)
-        return super().__getitem__(ltag)
+        return super().__getitem__(LangTag.get_name(langtag))
 
     def append(self, item: LangMark) -> None:
-        self[item.tag] = item
+        self[item.langtag] = item
 
     def lookup(self, langtag: LangT) -> str:
-        ltag: LangTag = LANGUAGES.lookup(langtag)
+        ltag: LangTag = LangTag.get_tag(langtag)
         mark: LangMark = self[LangTag.join(ltag.language, ltag.script)]
         code: Optional[str] = ltag.region.code if ltag.region else None
         return mark[code] if code else mark[""]
@@ -173,7 +178,7 @@ class LangMarks(Dict[LangTag, LangMark]):
     @classmethod
     def load_config(cls) -> Tuple[LangMark, ...]:
         with open(cls.CONFIG, "r", encoding="utf-8") as rhdl:
-            return tuple(LangMark(langtag=LANGUAGES.lookup(lang), regions=data)
+            return tuple(LangMark(langtag=LangTag.get_name(lang), regions=data)  # noqa:E501
                          for lang, data in load(rhdl).items())
 
     @classmethod
@@ -184,22 +189,22 @@ class LangMarks(Dict[LangTag, LangMark]):
         return instance
 
 
-LANGMARKS: LangMarks = LangMarks.from_config()
-
-
 class LangItem():
-    def __init__(self, langtag: LangTag, aliases: Iterable[str] = [], description: str = ""):  # noqa:E501
-        self.__langtag: LangTag = langtag
-        self.__aliases: Tuple[LangTag, ...] = tuple(LANGUAGES[a] for a in aliases)  # noqa:E501
-        self.__description: str = description or langtag.language.name
-        self.__recognition: str = LANGMARKS.lookup(langtag)
+    def __init__(self, langtag: LangT, aliases: Iterable[LangT] = [], description: str = "", recognition: str = ""):  # noqa:E501
+        self.__langtag: LangTag = LangTag.get_tag(langtag)
+        self.__aliases: Tuple[str, ...] = tuple(LangTag.get_name(a) for a in aliases)  # noqa:E501
+        self.__description: str = description or self.__langtag.language.name
+        self.__recognition: str = recognition
+
+    def __str__(self) -> str:
+        return f"{self.__langtag.name}({self.__description})"
 
     @property
-    def tag(self) -> LangTag:
-        return self.__langtag
+    def name(self) -> str:
+        return self.__langtag.name
 
     @property
-    def aliases(self) -> Tuple[LangTag, ...]:
+    def aliases(self) -> Tuple[str, ...]:
         return self.__aliases
 
     @property
@@ -216,56 +221,54 @@ class LangTags():
     CONFIG: str = os.path.join(BASE, "langtags.toml")
 
     def __init__(self):
-        self.__tags: Dict[LangTag, LangItem] = {}
+        self.__langmarks: LangMarks = LangMarks.from_config()
+        self.__tags: Dict[str, LangItem] = {}
 
-    def __iter__(self) -> Iterator[LangTag]:
+    def __iter__(self) -> Iterator[str]:
         return iter(self.__tags)
 
     def __len__(self) -> int:
         return len(self.__tags)
 
     def __contains__(self, langtag: LangT) -> bool:
-        return LANGUAGES.lookup(langtag) in self.__tags
+        return LangTag.get_name(langtag) in self.__tags
 
     def __getitem__(self, langtag: LangT) -> LangItem:
-        ltag: LangTag = LANGUAGES.lookup(langtag)
-        return self.__tags[ltag]
+        return self.__tags[LangTag.get_name(langtag)]
 
-    def __setitem__(self, langtag: LangT, item: LangItem) -> None:
-        assert item.tag == langtag
-        self.append(item)
+    @property
+    def langmarks(self) -> LangMarks:
+        return self.__langmarks
 
     def append(self, item: LangItem) -> None:
         for alias in item.aliases:
-            value = LangItem(langtag=alias, aliases=[], description=item.description)  # noqa:E501
+            value = LangItem(langtag=alias, aliases=[],
+                             description=item.description,
+                             recognition=self.langmarks.lookup(alias))
             self.__tags.setdefault(alias, value)
-        self.__tags[item.tag] = item
+        self.__tags[item.name] = item
 
     def lookup(self, langtag: LangT) -> LangItem:
         """Lookup language tag or replaceable subtags"""
-        ltag: LangTag = LANGUAGES.lookup(langtag)
-        if ltag in self.__tags:
-            return self.__tags[ltag]
+        ltag: LangTag = LangTag.get_tag(langtag)
+        if ltag.name in self.__tags:
+            return self.__tags[ltag.name]
         for _tag in ltag.tags:
-            ltag = LANGUAGES[_tag]
-            if ltag in self.__tags:
-                return self.__tags[ltag]
+            name: str = LangTag.get_name(_tag)
+            if name in self.__tags:
+                return self.__tags[name]
         raise LookupError(f"No such language tag: {langtag}")
-
-    @classmethod
-    def load_config(cls) -> Tuple[LangItem, ...]:
-        with open(cls.CONFIG, "r", encoding="utf-8") as rhdl:
-            return tuple(LangItem(langtag=LANGUAGES.lookup(lang),
-                                  aliases=data.get("aliases", []),
-                                  description=data.get("description", ""))
-                         for lang, data in load(rhdl).items())
 
     @classmethod
     def from_config(cls) -> "LangTags":
         instance = cls()
-        for item in cls.load_config():
-            instance[item.tag] = item
+        with open(cls.CONFIG, "r", encoding="utf-8") as rhdl:
+            for lang, data in load(rhdl).items():
+                langtag: LangTag = LangTag.get_tag(lang)
+                instance.append(
+                    LangItem(langtag=langtag,
+                             aliases=data.get("aliases", []),
+                             description=data.get("description", ""),
+                             recognition=instance.langmarks.lookup(langtag))
+                )
         return instance
-
-
-LANGTAGS: LangTags = LangTags.from_config()

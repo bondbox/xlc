@@ -7,9 +7,9 @@ from typing import Dict
 from toml import dumps
 from toml import loads
 
-from xlc.database.langtags import LANGTAGS
 from xlc.database.langtags import LangItem
-from xlc.database.langtags import LangT  # noqa:H306
+from xlc.database.langtags import LangT
+from xlc.database.langtags import LangTags
 
 
 class Context():
@@ -31,11 +31,10 @@ class Context():
 
 
 class Section(Context):
-    def __init__(self, language: LangT, title: str = ""):
-        lang: LangItem = LANGTAGS[language]
-        super().__init__(lang.tag.name)
+    def __init__(self, language: LangItem, title: str = ""):
+        super().__init__(language.name)
         self.__sections: Dict[str, Section] = {}
-        self.__language: LangItem = lang
+        self.__language: LangItem = language
         self.__title: str = title
 
     @property
@@ -58,7 +57,7 @@ class Section(Context):
     def find(self, index: str) -> "Section":
         if index not in self.__sections:
             title: str = ".".join([self.__title, index])
-            section = Section(language=self.lang.tag, title=title)
+            section = Section(language=self.lang, title=title)
             self.__sections.setdefault(index, section)
         return self.__sections[index]
 
@@ -70,8 +69,8 @@ class Section(Context):
 
 
 class Segment(Section):
-    def __init__(self, lang: LangT):
-        super().__init__(language=lang)
+    def __init__(self, language: LangItem):
+        super().__init__(language=language)
 
     def dumps(self) -> str:
         return dumps(self.dump())
@@ -81,15 +80,16 @@ class Segment(Section):
             whdl.write(self.dumps())
 
     @classmethod
-    def load(cls, ltag: LangT, data: Dict[str, Any]) -> "Segment":
-        instance: Segment = cls(ltag)
+    def load(cls, langtag: LangT, data: Dict[str, Any]) -> "Segment":
+        lang: LangItem = LangTags.from_config()[langtag]
+        instance: Segment = cls(lang)
         for k, v in data.items():
             instance.init(k, v)
         return instance
 
     @classmethod
-    def loads(cls, ltag: LangT, data: str) -> "Segment":
-        return cls.load(ltag=ltag, data=loads(data))
+    def loads(cls, langtag: LangT, data: str) -> "Segment":
+        return cls.load(langtag=langtag, data=loads(data))
 
     @classmethod
     def loadf(cls, file: str) -> "Segment":
@@ -97,14 +97,14 @@ class Segment(Section):
             base: str = os.path.basename(file)
             ltag: str = base[:base.find(".")]
             data: str = rhdl.read()
-            return cls.loads(ltag=ltag, data=data)
+            return cls.loads(langtag=ltag, data=data)
 
     @classmethod
     def generate(cls, langtag: LangT) -> "Segment":
-        lang: LangItem = LANGTAGS[langtag]
-        return Segment.load(lang.tag, {
+        lang: LangItem = LangTags.from_config()[langtag]
+        return Segment.load(lang.name, {
             "metadata": {
-                "languagetag": lang.tag.name,
+                "languagetag": lang.name,
                 "description": lang.description,
                 "recognition": lang.recognition
             }

@@ -2,7 +2,6 @@
 
 import unittest
 
-from xlc.database import LANGTAGS
 from xlc.database.langtags import LangTag
 from xlc.database.langtags import LangTags
 from xlc.database.subtags import Language
@@ -96,7 +95,7 @@ class TestLangTags(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.langtags: LangTags = LANGTAGS
+        cls.langtags: LangTags = LangTags.from_config()
 
     @classmethod
     def tearDownClass(cls):
@@ -116,33 +115,38 @@ class TestLangTags(unittest.TestCase):
 
     def test_lookup_zh_hans_cn(self):
         zh_hans_cn = self.langtags.lookup("zh-Hans-CN")
-        self.assertEqual(zh_hans_cn.tag, "zh-Hans-CN")
+        self.assertEqual(zh_hans_cn.name, "zh-Hans-CN")
         self.assertEqual(zh_hans_cn.recognition, "简体中文（中国）")
         self.assertEqual(zh_hans_cn.description, "PRC Mainland Chinese in simplified script")  # noqa:E501
+        self.assertEqual(str(zh_hans_cn), "zh-Hans-CN(PRC Mainland Chinese in simplified script)")  # noqa:E501
 
     def test_lookup_zh_hans_us(self):
         zh_hans_us = self.langtags.lookup("zh-Hans-US")
-        self.assertEqual(zh_hans_us.tag, "zh-Hans")
+        self.assertEqual(zh_hans_us.name, "zh-Hans")
         self.assertEqual(zh_hans_us.recognition, "简体中文")
         self.assertEqual(zh_hans_us.description, "simplified Chinese")
+        self.assertEqual(str(zh_hans_us), "zh-Hans(simplified Chinese)")
 
     def test_lookup_zh_cn(self):
-        zh_us = self.langtags.lookup("zh-CN")
-        self.assertEqual(zh_us.tag, "zh-CN")
-        self.assertEqual(zh_us.recognition, "中文（中国）")
-        self.assertEqual(zh_us.description, "simplified Chinese")
+        zh_cn = self.langtags.lookup("zh-CN")
+        self.assertEqual(zh_cn.name, "zh-CN")
+        self.assertEqual(zh_cn.recognition, "中文（中国）")
+        self.assertEqual(zh_cn.description, "simplified Chinese")
+        self.assertEqual(str(zh_cn), "zh-CN(simplified Chinese)")
 
     def test_lookup_zh_us(self):
         zh_us = self.langtags.lookup("zh-US")
-        self.assertEqual(zh_us.tag, "zh")
+        self.assertEqual(zh_us.name, "zh")
         self.assertEqual(zh_us.recognition, "中文")
         self.assertEqual(zh_us.description, "Chinese")
+        self.assertEqual(str(zh_us), "zh(Chinese)")
 
     def test_lookup_zh_hant(self):
         zh_hant = self.langtags.lookup("zh-Hant")
-        self.assertEqual(zh_hant.tag, "zh-Hant")
+        self.assertEqual(zh_hant.name, "zh-Hant")
         self.assertEqual(zh_hant.recognition, "繁體中文")
         self.assertEqual(zh_hant.description, "traditional Chinese")
+        self.assertEqual(str(zh_hant), "zh-Hant(traditional Chinese)")
 
 
 if __name__ == "__main__":
