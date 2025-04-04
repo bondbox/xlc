@@ -7,7 +7,7 @@ from typing import Dict
 from toml import dumps
 from toml import loads
 
-from xlc.database import LANGTAGS
+from xlc.database.langtags import LANGTAGS
 from xlc.database.langtags import LangItem
 from xlc.database.langtags import LangT  # noqa:H306
 
