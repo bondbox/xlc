@@ -7,6 +7,3 @@ from xlc.database.langtags import LangMarks  # noqa:F401
 from xlc.database.langtags import LangT  # noqa:F401
 from xlc.database.langtags import LangTag  # noqa:F401
 from xlc.database.langtags import LangTags  # noqa:F401
-from xlc.database.subtags import Language  # noqa:F401
-from xlc.database.subtags import Region  # noqa:F401
-from xlc.database.subtags import Script  # noqa:F401
