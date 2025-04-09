@@ -11,10 +11,10 @@ from typing import TypeVar
 
 from toml import load
 
-from xlc.database.subtags import Entry
 from xlc.database.subtags import Language
 from xlc.database.subtags import Region
 from xlc.database.subtags import Script
+from xlc.database.subtags import Stag
 
 BASE: str = os.path.dirname(__file__)
 
@@ -110,11 +110,11 @@ class LangTag:
         return self.__region
 
     @classmethod
-    def filter(cls, *tags: Optional[Entry]) -> Tuple[Entry, ...]:
+    def filter(cls, *tags: Optional[Stag]) -> Tuple[Stag, ...]:
         return tuple(filter(None, tags))
 
     @classmethod
-    def join(cls, *tags: Optional[Entry]) -> str:
+    def join(cls, *tags: Optional[Stag]) -> str:
         return cls.HYPHEN.join(str(tag) for tag in cls.filter(*tags))
 
     @classmethod

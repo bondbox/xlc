@@ -1,17 +1,15 @@
 # coding:utf-8
 
+import os
 from typing import Dict
+from typing import Optional
 
-from pycountry import countries
-from pycountry import languages
-from pycountry import scripts
-from pycountry.db import Data
+from toml import load
+
+BASE: str = os.path.dirname(__file__)
 
 
-class Entry():
-    def __init__(self, data: Data):
-        self.__data: Data = data
-
+class Stag():
     def __str__(self) -> str:
         return self.code
 
@@ -19,23 +17,57 @@ class Entry():
     def code(self) -> str:
         raise NotImplementedError()
 
+    @classmethod
+    def get(cls, base: str, name: str) -> Dict[str, str]:
+        path: str = os.path.join(base, name.lower())
+        if os.path.isfile(path):
+            with open(path, "r", encoding="UTF-8") as rhdl:
+                return load(rhdl)
+        else:
+            raise KeyError(f"{path} is not found")
+
+
+class Language(Stag):
+    """Language in ISO 639-3"""
+    CONFIG: str = os.path.join(BASE, "languages")
+
+    def __init__(self, data: Dict[str, str]):
+        self.__alpha_2: Optional[str] = data.get("alpha_2")
+        self.__alpha_3: str = data["alpha_3"]
+        self.__name: str = data["name"]
+
     @property
-    def data(self) -> Data:
-        return self.__data
+    def code(self) -> str:
+        return self.alpha_2 or self.alpha_3
+
+    @property
+    def name(self) -> str:
+        return self.__name
+
+    @property
+    def alpha_2(self) -> Optional[str]:
+        return self.__alpha_2
+
+    @property
+    def alpha_3(self) -> str:
+        return self.__alpha_3
 
     @classmethod
-    def keyword(cls, value: str) -> Dict[str, str]:
-        """generate search feild value pair"""
-        assert isinstance(value, str)
-        feild = f"alpha_{len(value)}"
-        return {feild: value}
+    def get(cls, index: str) -> "Language":
+        return cls(super().get(cls.CONFIG, index))
 
 
-class Language(Entry):
-    """Language in ISO 639-3"""
+class Region(Stag):
+    """Country or Region in ISO 3166-1"""
+    CONFIG: str = os.path.join(BASE, "regions")
 
-    def __init__(self, data: Data):
-        super().__init__(data)
+    def __init__(self, data: Dict[str, str]):
+        self.__official_name: str = data["official_name"]
+        self.__alpha_2: str = data["alpha_2"]
+        self.__alpha_3: str = data["alpha_3"]
+        self.__numeric: str = data["numeric"]
+        self.__flag: str = data["flag"]
+        self.__name: str = data["name"]
 
     @property
     def code(self) -> str:
@@ -43,28 +75,41 @@ class Language(Entry):
 
     @property
     def name(self) -> str:
-        return self.data.name
+        return self.__name
+
+    @property
+    def flag(self) -> str:
+        return self.__flag
+
+    @property
+    def numeric(self) -> int:
+        return int(self.__numeric)
 
     @property
     def alpha_2(self) -> str:
-        return self.data.alpha_2
+        return self.__alpha_2
 
     @property
     def alpha_3(self) -> str:
-        return self.data.alpha_3
+        return self.__alpha_3
+
+    @property
+    def official_name(self) -> str:
+        return self.__official_name
 
     @classmethod
-    def get(cls, code: str) -> "Language":
-        if (data := languages.get(**cls.keyword(code))) is None:  # >=3.8
-            raise ValueError(f"No such language: {code}")
-        return cls(data)
+    def get(cls, index: str) -> "Region":
+        return cls(super().get(cls.CONFIG, index))
 
 
-class Script(Entry):
+class Script(Stag):
     """Script in ISO 15924"""
+    CONFIG: str = os.path.join(BASE, "scripts")
 
-    def __init__(self, data: Data):
-        super().__init__(data)
+    def __init__(self, data: Dict[str, str]):
+        self.__alpha_4: str = data["alpha_4"]
+        self.__numeric: str = data["numeric"]
+        self.__name: str = data["name"]
 
     @property
     def code(self) -> str:
@@ -72,59 +117,16 @@ class Script(Entry):
 
     @property
     def name(self) -> str:
-        return self.data.name
+        return self.__name
 
     @property
     def numeric(self) -> int:
-        return int(self.data.numeric)
+        return int(self.__numeric)
 
     @property
     def alpha_4(self) -> str:
-        return self.data.alpha_4
+        return self.__alpha_4
 
     @classmethod
-    def get(cls, code: str) -> "Script":
-        if (data := scripts.get(**cls.keyword(code))) is None:  # >=3.8
-            raise ValueError(f"No such script: {code}")
-        return cls(data)
-
-
-class Region(Entry):
-    """Country or Region in ISO 3166-1"""
-
-    def __init__(self, data: Data):
-        super().__init__(data)
-
-    @property
-    def code(self) -> str:
-        return self.alpha_2
-
-    @property
-    def name(self) -> str:
-        return self.data.name
-
-    @property
-    def flag(self) -> str:
-        return self.data.flag
-
-    @property
-    def numeric(self) -> int:
-        return int(self.data.numeric)
-
-    @property
-    def alpha_2(self) -> str:
-        return self.data.alpha_2
-
-    @property
-    def alpha_3(self) -> str:
-        return self.data.alpha_3
-
-    @property
-    def official_name(self) -> str:
-        return self.data.official_name
-
-    @classmethod
-    def get(cls, code: str) -> "Region":
-        if (data := countries.get(**cls.keyword(code))) is None:  # >=3.8
-            raise ValueError(f"No such country or region: {code}")
-        return cls(data)
+    def get(cls, index: str) -> "Script":
+        return cls(super().get(cls.CONFIG, index))

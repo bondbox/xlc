@@ -25,8 +25,8 @@ class TestSubTags(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_language_ValueError(self):
-        self.assertRaises(ValueError, Language.get, "xx")
+    def test_language_KeyError(self):
+        self.assertRaises(KeyError, Language.get, "xx")
 
     def test_language_zh(self):
         language = Language.get("zh")
@@ -36,8 +36,8 @@ class TestSubTags(unittest.TestCase):
         self.assertEqual(language.alpha_2, "zh")
         self.assertEqual(language.alpha_3, "zho")
 
-    def test_script_ValueError(self):
-        self.assertRaises(ValueError, Script.get, "xxxx")
+    def test_script_KeyError(self):
+        self.assertRaises(KeyError, Script.get, "xxxx")
 
     def test_script_hans(self):
         script = Script.get("hans")
@@ -47,8 +47,8 @@ class TestSubTags(unittest.TestCase):
         self.assertEqual(script.numeric, 501)
         self.assertEqual(script.alpha_4, "Hans")
 
-    def test_region_ValueError(self):
-        self.assertRaises(ValueError, Region.get, "xx")
+    def test_region_KeyError(self):
+        self.assertRaises(KeyError, Region.get, "xx")
 
     def test_region_cn(self):
         region = Region.get("cn")
