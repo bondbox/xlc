@@ -171,3 +171,8 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# xlc/database
+xlc/database/languages/
+xlc/database/regions/
+xlc/database/scripts/

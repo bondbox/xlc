@@ -23,11 +23,16 @@ upload:
 	make -C xlc-tools upload
 
 
+generate:
+	pip3 install --upgrade pycountry
+	python3 xlc/database/generate
+
+
 build-clean:
 	xpip-build --debug setup --clean
 build-requirements:
 	pip3 install -r requirements.txt
-build: build-clean build-requirements
+build: build-clean build-requirements generate
 	xpip-build --debug setup --all
 
 

@@ -1,0 +1,99 @@
+# coding:utf-8
+
+import os
+import shutil
+from typing import Dict
+
+from pycountry import countries
+from pycountry import languages
+from pycountry import scripts
+from toml import dump
+from toml import load
+
+BASE: str = os.path.dirname(__file__)
+
+
+def format(path: str):
+    with open(path, "r", encoding="UTF-8") as rhdl:
+        data = load(rhdl)
+    with open(path, "w", encoding="UTF-8") as whdl:
+        dump(data, whdl)
+
+
+def generate_dir(base: str):
+    if os.path.exists(base):
+        shutil.rmtree(base)
+    os.makedirs(base, exist_ok=True)
+    with open(os.path.join(base, "__init__.py"), "w") as whdl:
+        whdl.write("")
+
+
+def generate_languages(base: str):
+    generate_dir(base=base)
+    for language in languages:
+        alpha_3: str = getattr(language, "alpha_3")
+        name: str = getattr(language, "name")
+        if hasattr(language, "alpha_2"):
+            alpha_2: str = getattr(language, "alpha_2")
+            data: Dict[str, str] = {
+                "alpha_2": alpha_2,
+                "alpha_3": alpha_3,
+                "name": name,
+            }
+            path: str = os.path.join(base, alpha_2.lower())
+            with open(path, "w", encoding="UTF-8") as whdl:
+                dump(data, whdl)
+        else:
+            data: Dict[str, str] = {
+                "alpha_3": alpha_3,
+                "name": name,
+            }
+            path: str = os.path.join(base, alpha_3.lower())
+            with open(path, "w", encoding="UTF-8") as whdl:
+                dump(data, whdl)
+
+
+def generate_regions(base: str):
+    generate_dir(base=base)
+    for country in countries:
+        alpha_2: str = getattr(country, "alpha_2")
+        alpha_3: str = getattr(country, "alpha_3")
+        flag: str = getattr(country, "flag")
+        name: str = getattr(country, "name")
+        numeric: str = getattr(country, "numeric")
+        official_name: str = getattr(country, "official_name" if hasattr(country, "official_name") else "name")  # noqa:E501
+        data: Dict[str, str] = {
+            "alpha_2": alpha_2,
+            "alpha_3": alpha_3,
+            "flag": flag,
+            "name": name,
+            "numeric": numeric,
+            "official_name": official_name,
+        }
+        path: str = os.path.join(base, alpha_2.lower())
+        with open(path, "w", encoding="UTF-8") as whdl:
+            dump(data, whdl)
+
+
+def generate_scripts(base: str):
+    generate_dir(base=base)
+    for script in scripts:
+        alpha_4: str = getattr(script, "alpha_4")
+        name: str = getattr(script, "name")
+        numeric: str = getattr(script, "numeric")
+        data: Dict[str, str] = {
+            "alpha_4": alpha_4,
+            "name": name,
+            "numeric": numeric,
+        }
+        path: str = os.path.join(base, alpha_4.lower())
+        with open(path, "w", encoding="UTF-8") as whdl:
+            dump(data, whdl)
+
+
+if __name__ == "__main__":
+    generate_languages(os.path.join(BASE, "languages"))
+    generate_regions(os.path.join(BASE, "regions"))
+    generate_scripts(os.path.join(BASE, "scripts"))
+    format(os.path.join(BASE, "langmark.toml"))
+    format(os.path.join(BASE, "langtags.toml"))
