@@ -4,8 +4,6 @@ import os
 from typing import Dict
 from typing import Optional
 
-from toml import load
-
 BASE: str = os.path.dirname(__file__)
 
 
@@ -18,18 +16,20 @@ class Stag():
         raise NotImplementedError()
 
     @classmethod
-    def get(cls, base: str, name: str) -> Dict[str, str]:
-        path: str = os.path.join(base, name.lower())
-        if os.path.isfile(path):
-            with open(path, "r", encoding="UTF-8") as rhdl:
-                return load(rhdl)
-        else:
-            raise KeyError(f"{path} is not found")
+    def get(cls, config: str, name: str) -> Dict[str, str]:
+        import tarfile
+
+        from toml import loads
+
+        with tarfile.open(config, "r:") as tar:
+            obj = tar.extractfile(name.lower())
+            assert obj is not None, f"Not found {name} in {config}"
+            return loads(obj.read().decode("UTF-8"))
 
 
 class Language(Stag):
     """Language in ISO 639-3"""
-    CONFIG: str = os.path.join(BASE, "languages")
+    CONFIG: str = os.path.join(BASE, "languages.tar")
 
     def __init__(self, data: Dict[str, str]):
         self.__alpha_2: Optional[str] = data.get("alpha_2")
@@ -59,7 +59,7 @@ class Language(Stag):
 
 class Region(Stag):
     """Country or Region in ISO 3166-1"""
-    CONFIG: str = os.path.join(BASE, "regions")
+    CONFIG: str = os.path.join(BASE, "regions.tar")
 
     def __init__(self, data: Dict[str, str]):
         self.__official_name: str = data["official_name"]
@@ -104,7 +104,7 @@ class Region(Stag):
 
 class Script(Stag):
     """Script in ISO 15924"""
-    CONFIG: str = os.path.join(BASE, "scripts")
+    CONFIG: str = os.path.join(BASE, "scripts.tar")
 
     def __init__(self, data: Dict[str, str]):
         self.__alpha_4: str = data["alpha_4"]

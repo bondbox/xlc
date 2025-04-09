@@ -2,6 +2,7 @@
 
 import os
 import shutil
+import tarfile
 from typing import Dict
 
 from pycountry import countries
@@ -24,8 +25,12 @@ def generate_dir(base: str):
     if os.path.exists(base):
         shutil.rmtree(base)
     os.makedirs(base, exist_ok=True)
-    with open(os.path.join(base, "__init__.py"), "w") as whdl:
-        whdl.write("")
+
+
+def generate_tar(base: str):
+    with tarfile.open(f"{base}.tar", "w:") as tar:
+        for file in os.listdir(base):
+            tar.add(os.path.join(base, file), file)
 
 
 def generate_languages(base: str):
@@ -51,6 +56,7 @@ def generate_languages(base: str):
             path: str = os.path.join(base, alpha_3.lower())
             with open(path, "w", encoding="UTF-8") as whdl:
                 dump(data, whdl)
+    generate_tar(base=base)
 
 
 def generate_regions(base: str):
@@ -73,6 +79,7 @@ def generate_regions(base: str):
         path: str = os.path.join(base, alpha_2.lower())
         with open(path, "w", encoding="UTF-8") as whdl:
             dump(data, whdl)
+    generate_tar(base=base)
 
 
 def generate_scripts(base: str):
@@ -89,6 +96,7 @@ def generate_scripts(base: str):
         path: str = os.path.join(base, alpha_4.lower())
         with open(path, "w", encoding="UTF-8") as whdl:
             dump(data, whdl)
+    generate_tar(base=base)
 
 
 if __name__ == "__main__":
