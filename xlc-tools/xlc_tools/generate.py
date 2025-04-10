@@ -33,7 +33,7 @@ def run_cmd(cmds: Command) -> int:
     message: Message = Message(directory)
     for language in languages:
         ltag: LangTag = message.languages.get(language)
-        segment: Segment = message.load(ltag) or Segment.generate(ltag)
+        segment: Segment = message.load(ltag) if ltag in message else Segment.generate(ltag)  # noqa:E501
         filename: str = segment.lang.name + Message.SUFFIX
         segment.dumpf(os.path.join(directory, filename))
     return 0
