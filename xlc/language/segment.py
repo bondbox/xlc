@@ -102,10 +102,4 @@ class Segment(Section):
     @classmethod
     def generate(cls, langtag: LangT) -> "Segment":
         lang: LangItem = LangTags.from_config()[langtag]
-        return Segment.load(lang, {
-            "metadata": {
-                "languagetag": lang.name,
-                "description": lang.description,
-                "recognition": lang.recognition
-            }
-        })
+        return Segment.load(lang, {})

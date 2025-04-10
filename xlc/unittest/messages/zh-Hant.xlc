@@ -1,4 +1,7 @@
+language = "zh-Hant"
+
 [login]
+language = "zh-Hant"
 username = "用戶"
 password = "密碼"
 submit = "提交"

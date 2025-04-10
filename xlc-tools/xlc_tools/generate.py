@@ -12,6 +12,7 @@ from xkits_command import CommandExecutor
 
 from xlc.attribute import __urlhome__
 from xlc.attribute import __version__
+from xlc.database.langtags import LangTag
 from xlc.language.message import Message
 from xlc.language.segment import Segment
 
@@ -29,8 +30,10 @@ def run_cmd(cmds: Command) -> int:
     directory: str = cmds.args.directory
     languages: List[str] = cmds.args.languages
     os.makedirs(directory, exist_ok=True)
+    message: Message = Message(directory)
     for language in languages:
-        segment: Segment = Segment.generate(language)
+        ltag: LangTag = message.languages.get(language)
+        segment: Segment = message.load(ltag) or Segment.generate(ltag)
         filename: str = segment.lang.name + Message.SUFFIX
         segment.dumpf(os.path.join(directory, filename))
     return 0

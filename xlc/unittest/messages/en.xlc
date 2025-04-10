@@ -1,4 +1,7 @@
+language = "en"
+
 [login]
+language = "en"
 username = "Username"
 password = "Password"
 submit = "Login"
