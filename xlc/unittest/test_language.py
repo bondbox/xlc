@@ -32,8 +32,7 @@ username = "Username: {username}"
 password = "Password: {password}"
 """
         with mock.patch.object(segment, "open", mock.mock_open(read_data=cls.data)):  # noqa:E501
-            cls.root: segment.Segment = segment.Segment.loadf(
-                LangTags.from_config(), "en.xlc")
+            cls.root: segment.Segment = segment.Segment.loadf("en.xlc")
 
     @classmethod
     def tearDownClass(cls):
@@ -73,7 +72,6 @@ class TestMessage(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.dirname: str = os.path.join(os.path.dirname(__file__), "messages")
-        cls.message: Message = Message.load(cls.dirname)
         cls.langtags: LangTags = LangTags.from_config()
 
     @classmethod
@@ -81,13 +79,16 @@ class TestMessage(unittest.TestCase):
         pass
 
     def setUp(self):
-        pass
+        self.message: Message = Message(self.dirname)
 
     def tearDown(self):
         pass
 
     def test_iter_and_len(self):
-        self.assertEqual(len(self.message), 10)
+        self.assertEqual(len(self.message), 0)
+        zh_hans_cn = self.message.lookup("zh-hans-cn")
+        self.assertIs(self.message.lookup("zh-hans-cn"), zh_hans_cn)
+        self.assertEqual(len(self.message), 3)
         for ltag in self.message:
             self.assertIn(ltag, self.langtags)
         for ltag in self.langtags:

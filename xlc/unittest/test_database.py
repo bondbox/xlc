@@ -80,13 +80,17 @@ class TestLangTag(unittest.TestCase):
 
     def test_zh_hans_cn(self):
         zh_hans_cn = LangTag("zh-Hans-CN")
+        self.assertIsInstance(hash(zh_hans_cn), int)
         self.assertEqual(str(zh_hans_cn), "zh-Hans-CN")
+        self.assertEqual(zh_hans_cn, "zh-Hans-CN")
         tags = [tag for tag in zh_hans_cn]
         self.assertEqual(tags, ["zh-Hans", "zh-CN", "zh"])
 
     def test_en_us(self):
         en_us = LangTag("en-us")
+        self.assertIsInstance(hash(en_us), int)
         self.assertEqual(str(en_us), "en-US")
+        self.assertEqual(en_us, "en-US")
         tags = [tag for tag in en_us]
         self.assertEqual(tags, ["en"])
 

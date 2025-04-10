@@ -91,8 +91,9 @@ class Segment(Section):
         return cls.load(lang=lang, data=loads(data))
 
     @classmethod
-    def loadf(cls, langtags: LangTags, file: str) -> "Segment":
+    def loadf(cls, file: str) -> "Segment":
         with open(file, "r", encoding="utf-8") as rhdl:
+            langtags: LangTags = LangTags.from_config()
             base: str = os.path.basename(file)
             ltag: str = base[:base.find(".")]
             data: str = rhdl.read()
