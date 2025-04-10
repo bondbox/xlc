@@ -73,22 +73,20 @@ class TestMessage(unittest.TestCase):
     def setUpClass(cls):
         cls.dirname: str = os.path.join(os.path.dirname(__file__), "messages")
         cls.langtags: LangTags = LangTags.from_config()
+        cls.message: Message = Message(cls.dirname)
 
     @classmethod
     def tearDownClass(cls):
         pass
 
     def setUp(self):
-        self.message: Message = Message(self.dirname)
+        pass
 
     def tearDown(self):
         pass
 
     def test_iter_and_len(self):
-        self.assertEqual(len(self.message), 0)
-        zh_hans_cn = self.message.lookup("zh-hans-cn")
-        self.assertIs(self.message.lookup("zh-hans-cn"), zh_hans_cn)
-        self.assertEqual(len(self.message), 3)
+        self.assertEqual(len(self.message), 10)
         for ltag in self.message:
             self.assertIn(ltag, self.langtags)
         for ltag in self.langtags:
@@ -101,41 +99,49 @@ class TestMessage(unittest.TestCase):
         zh_hans_cn = self.message.lookup("zh-hans-cn")
         self.assertEqual(zh_hans_cn.lang.name, "zh-Hans")
         self.assertEqual(zh_hans_cn.lang.recognition, "简体中文")
+        self.assertIs(self.message.lookup("zh-hans-cn"), zh_hans_cn)
 
     def test_zh_hant_cn(self):
         zh_hant_cn = self.message.lookup("zh-hant-cn")
         self.assertEqual(zh_hant_cn.lang.name, "zh-Hant")
         self.assertEqual(zh_hant_cn.lang.recognition, "繁體中文")
+        self.assertIs(self.message.lookup("zh-hant-cn"), zh_hant_cn)
 
     def test_zh_hans_tw(self):
         zh_hans_tw = self.message.lookup("zh-hans-tw")
         self.assertEqual(zh_hans_tw.lang.name, "zh-Hans")
         self.assertEqual(zh_hans_tw.lang.recognition, "简体中文")
+        self.assertIs(self.message.lookup("zh-hans-tw"), zh_hans_tw)
 
     def test_zh_hant_tw(self):
         zh_hant_tw = self.message.lookup("zh-hant-tw")
         self.assertEqual(zh_hant_tw.lang.name, "zh-Hant")
         self.assertEqual(zh_hant_tw.lang.recognition, "繁體中文")
+        self.assertIs(self.message.lookup("zh-hant-tw"), zh_hant_tw)
 
     def test_zh_hans(self):
         zh_hans = self.message.lookup("zh-hans")
         self.assertEqual(zh_hans.lang.name, "zh-Hans")
         self.assertEqual(zh_hans.lang.recognition, "简体中文")
+        self.assertIs(self.message.lookup("zh-hans"), zh_hans)
 
     def test_zh_hant(self):
         zh_hant = self.message.lookup("zh-hant")
         self.assertEqual(zh_hant.lang.name, "zh-Hant")
         self.assertEqual(zh_hant.lang.recognition, "繁體中文")
+        self.assertIs(self.message.lookup("zh-hant"), zh_hant)
 
     def test_zh_cn(self):
         zh_cn = self.message.lookup("zh-cn")
         self.assertEqual(zh_cn.lang.name, "zh-CN")
         self.assertEqual(zh_cn.lang.recognition, "中文（中国）")
+        self.assertIs(self.message.lookup("zh-cn"), zh_cn)
 
     def test_zh_tw(self):
         zh_tw = self.message.lookup("zh-tw")
         self.assertEqual(zh_tw.lang.name, "zh-TW")
         self.assertEqual(zh_tw.lang.recognition, "中文（中国台湾）")
+        self.assertIs(self.message.lookup("zh-tw"), zh_tw)
 
     def test_lookup_zh(self):
         self.assertRaises(LookupError, self.message.lookup, "zh")
