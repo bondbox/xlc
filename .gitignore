@@ -176,4 +176,4 @@ cython_debug/
 xlc/database/languages/
 xlc/database/regions/
 xlc/database/scripts/
-xlc/database/*.tar
+xlc/database/*.tar.xz

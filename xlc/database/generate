@@ -28,7 +28,7 @@ def generate_dir(base: str):
 
 
 def generate_tar(base: str):
-    with tarfile.open(f"{base}.tar", "w:") as tar:
+    with tarfile.open(f"{base}.tar.xz", "w:xz") as tar:
         for file in os.listdir(base):
             tar.add(os.path.join(base, file), file)
 

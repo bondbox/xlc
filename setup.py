@@ -1,9 +1,12 @@
 # coding=utf-8
 
+import os
+import tarfile
 from urllib.parse import urljoin
 
 from setuptools import find_packages
 from setuptools import setup
+from setuptools.command.install import install
 
 from xlc.attribute import __author__
 from xlc.attribute import __author_email__
@@ -26,6 +29,25 @@ def all_requirements():
     return requirements
 
 
+class CustomInstallCommand(install):
+    """Customized setuptools install command"""
+
+    def run(self):
+        install.run(self)  # Run the standard installation
+        self.unpack_tar_files()  # Unpack all .tar files after installation
+
+    def unpack_tar_files(self):
+        install_lib = self.install_lib
+        assert isinstance(install_lib, str)
+        package_dir = os.path.join(install_lib, "xlc", "database")
+        for filename in os.listdir(package_dir):
+            if filename.endswith(".tar.xz"):
+                tar_path = os.path.join(package_dir, filename)
+                with tarfile.open(tar_path, "r:xz") as tar:
+                    tar.extractall(path=tar_path[:-7])
+                os.remove(tar_path)
+
+
 setup(
     name=__project__,
     version=__version__,
@@ -37,5 +59,9 @@ setup(
                   "Bug Tracker": __urlbugs__,
                   "Documentation": __urldocs__},
     packages=find_packages(include=["xlc*"], exclude=["xlc.unittest"]),
-    package_data={"xlc.database": ["langmark.toml", "langtags.toml", "*.tar"]},
-    install_requires=all_requirements())
+    package_data={"xlc.database": ["langmark.toml", "langtags.toml", "*.tar.xz"]},  # noqa:E501
+    install_requires=all_requirements(),
+    cmdclass={
+        "install": CustomInstallCommand,
+    }
+)
