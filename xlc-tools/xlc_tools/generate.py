@@ -20,7 +20,7 @@ from xlc.language.segment import Segment
 @CommandArgument("xlc-generate", description="Generate xlc files")
 def add_cmd(_arg: ArgParser):
     _arg.add_argument("--base", dest="directory", type=str, help="directory",
-                      metavar="DIR", default="xlocale")
+                      metavar="DIR", default="translate")
     _arg.add_argument(dest="languages", type=str, help="language", nargs="*",
                       metavar="LANG", default=["en", "zh-Hans", "zh-Hant"])
 
