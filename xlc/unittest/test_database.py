@@ -1,6 +1,7 @@
 # coding:utf-8
 
-import unittest
+from unittest import TestCase
+from unittest import main
 
 from xlc.database.langtags import LangTag
 from xlc.database.langtags import LangTags
@@ -9,7 +10,7 @@ from xlc.database.subtags import Region
 from xlc.database.subtags import Script
 
 
-class TestSubTags(unittest.TestCase):
+class TestSubTags(TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -62,7 +63,7 @@ class TestSubTags(unittest.TestCase):
         self.assertEqual(region.official_name, "People's Republic of China")
 
 
-class TestLangTag(unittest.TestCase):
+class TestLangTag(TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -95,7 +96,7 @@ class TestLangTag(unittest.TestCase):
         self.assertEqual(tags, ["en"])
 
 
-class TestLangTags(unittest.TestCase):
+class TestLangTags(TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -154,4 +155,4 @@ class TestLangTags(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

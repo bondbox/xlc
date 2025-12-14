@@ -1,7 +1,8 @@
 # coding:utf-8
 
 import os
-import unittest
+from unittest import TestCase
+from unittest import main
 from unittest import mock
 
 from xlc.database.langtags import LangTags
@@ -9,7 +10,7 @@ from xlc.language import segment
 from xlc.language.message import Message
 
 
-class TestSegment(unittest.TestCase):
+class TestSegment(TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -67,7 +68,7 @@ password = "Password: {password}"
         self.assertEqual(lang.name, "en")
 
 
-class TestMessage(unittest.TestCase):
+class TestMessage(TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -148,4 +149,4 @@ class TestMessage(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()
