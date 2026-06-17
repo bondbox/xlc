@@ -1,0 +1,75 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = [
+    "hatch-requirements-txt",
+    "hatchling",
+]
+
+[project]
+authors = [
+    { name = "Mingzhe Zou", email = "zoumingzhe@outlook.com" },
+]
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+description = "Internationalization(i18n) and Localization(l10n) of Multiple Languages"
+dynamic = [
+    "dependencies",
+    "version",
+]
+keywords = []
+license-files = [
+    "LICENSE",
+]
+name = "xlc"
+requires-python = ">=3.8"
+
+[project.readme]
+content-type = "text/markdown"
+file = "readme.md"
+
+[project.scripts]
+
+[project.urls]
+Homepage = "https://github.com/bondbox/xlc/"
+
+[tool.hatch.version]
+path = "xlc/attribute.py"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "xlc/unittest",
+]
+packages = [
+    "xlc",
+]
+
+[tool.hatch.build.targets.sdist.force-include]
+"database/__init__.py" = "xlc/database/__init__.py"
+"database/langmark.toml" = "xlc/database/langmark.toml"
+"database/langtags.toml" = "xlc/database/langtags.toml"
+"database/languages.tar.xz" = "xlc/database/languages.tar.xz"
+"database/regions.tar.xz" = "xlc/database/regions.tar.xz"
+"database/scripts.tar.xz" = "xlc/database/scripts.tar.xz"
+
+[tool.hatch.build.targets.wheel]
+exclude = [
+    "xlc/unittest",
+]
+packages = [
+    "xlc",
+]
+
+[tool.hatch.build.targets.wheel.force-include]
+"database/__init__.py" = "xlc/database/__init__.py"
+"database/langmark.toml" = "xlc/database/langmark.toml"
+"database/langtags.toml" = "xlc/database/langtags.toml"
+"database/languages.tar.xz" = "xlc/database/languages.tar.xz"
+"database/regions.tar.xz" = "xlc/database/regions.tar.xz"
+"database/scripts.tar.xz" = "xlc/database/scripts.tar.xz"
+
+[tool.hatch.metadata.hooks.requirements_txt]
+files = [
+    "requirements.txt",
+]
