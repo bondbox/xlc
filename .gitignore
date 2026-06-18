@@ -173,7 +173,7 @@ cython_debug/
 .pypirc
 
 # xlc/database
-xlc/database/languages/
-xlc/database/regions/
-xlc/database/scripts/
-xlc/database/*.tar.xz
+xlc/xlc/database/languages/
+xlc/xlc/database/regions/
+xlc/xlc/database/scripts/
+xlc/xlc/database/*.tar.xz

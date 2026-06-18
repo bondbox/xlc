@@ -1,8 +1,8 @@
 [build-system]
-build-backend = "hatchling.build"
+build-backend = "setuptools.build_meta"
 requires = [
-    "hatch-requirements-txt",
-    "hatchling",
+    "setuptools",
+    "toml",
 ]
 
 [project]
@@ -33,43 +33,3 @@ file = "readme.md"
 
 [project.urls]
 Homepage = "https://github.com/bondbox/xlc/"
-
-[tool.hatch.version]
-path = "xlc/attribute.py"
-
-[tool.hatch.build.targets.sdist]
-exclude = [
-    "xlc/unittest",
-]
-packages = [
-    "xlc",
-]
-
-[tool.hatch.build.targets.sdist.force-include]
-"database/__init__.py" = "xlc/database/__init__.py"
-"database/langmark.toml" = "xlc/database/langmark.toml"
-"database/langtags.toml" = "xlc/database/langtags.toml"
-"database/languages.tar.xz" = "xlc/database/languages.tar.xz"
-"database/regions.tar.xz" = "xlc/database/regions.tar.xz"
-"database/scripts.tar.xz" = "xlc/database/scripts.tar.xz"
-
-[tool.hatch.build.targets.wheel]
-exclude = [
-    "xlc/unittest",
-]
-packages = [
-    "xlc",
-]
-
-[tool.hatch.build.targets.wheel.force-include]
-"database/__init__.py" = "xlc/database/__init__.py"
-"database/langmark.toml" = "xlc/database/langmark.toml"
-"database/langtags.toml" = "xlc/database/langtags.toml"
-"database/languages.tar.xz" = "xlc/database/languages.tar.xz"
-"database/regions.tar.xz" = "xlc/database/regions.tar.xz"
-"database/scripts.tar.xz" = "xlc/database/scripts.tar.xz"
-
-[tool.hatch.metadata.hooks.requirements_txt]
-files = [
-    "requirements.txt",
-]
