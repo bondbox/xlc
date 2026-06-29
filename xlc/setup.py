@@ -50,9 +50,7 @@ class CustomInstallCommand(install):
 
 
 setup(
-    version=__version__,
-    packages=find_packages(include=["xlc*"], exclude=["xlc.unittest"]),
-    package_data={"xlc.database": ["langmark.toml", "langtags.toml", "*.tar.xz"]},  # noqa:E501
+    version=__version__, # noqa:E501
     install_requires=all_requirements(),
     cmdclass={
         "install": CustomInstallCommand,

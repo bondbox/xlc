@@ -33,3 +33,14 @@ file = "readme.md"
 
 [project.urls]
 Homepage = "https://github.com/bondbox/xlc/"
+
+[tool.setuptools.packages.find]
+exclude = [
+    "xlc.unittest",
+]
+include = [
+    "xlc*",
+]
+
+[tool.setuptools.package-data]
+"xlc.database" = ["langmark.toml", "langtags.toml", "*.tar.xz"]
