@@ -50,15 +50,7 @@ class CustomInstallCommand(install):
 
 
 setup(
-    name=__package_name__,
     version=__version__,
-    description=__project_desc__,
-    url=__project_home__,
-    author="user",
-    author_email="user@example.com",
-    project_urls={"Source Code": __urlcode__,
-                  "Bug Tracker": __urlbugs__,
-                  "Documentation": __urldocs__},
     packages=find_packages(include=["xlc*"], exclude=["xlc.unittest"]),
     package_data={"xlc.database": ["langmark.toml", "langtags.toml", "*.tar.xz"]},  # noqa:E501
     install_requires=all_requirements(),
