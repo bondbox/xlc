@@ -20,7 +20,12 @@ upload:
 	xpip-upload --config-file .pypirc dist/*
 
 
-build-prepare:
+generate:
+	python3 -m pip install --upgrade pycountry
+	python3 xlc/database/generate
+
+
+build-prepare: generate
 	python3 -m pip install --upgrade xpip-build
 build-clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
