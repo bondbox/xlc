@@ -10,7 +10,6 @@ email = "zoumingzhe@outlook.com"
 
 [packages.xlc]
 base = "xlc"
-build_backend = "setup"
 requires_python = ">=3.8"
 authors = [
     "zoumingzhe",
@@ -19,6 +18,7 @@ keywords = []
 requirements = [
     "toml",
 ]
+build_backend = "setuptools"
 max_complexity = 10
 max_line_length = 127
 
