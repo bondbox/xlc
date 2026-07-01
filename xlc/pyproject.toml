@@ -39,9 +39,7 @@ exclude = [
     "xlc.unittest",
 ]
 include = [
-    "xlc.database",
-    "xlc.language",
-    "xlc",
+    "xlc*",
 ]
 
 [tool.setuptools.package-data]
